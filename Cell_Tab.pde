@@ -1,6 +1,6 @@
 public class Cell {
   
-  int radius=20;
+  int radius=17;
   float apothem = sqrt(3)*radius/2;
   
   GridBubble bubble;
@@ -15,11 +15,13 @@ public class Cell {
   
     
   public void drawBubble(){
-    if (bubble.colour!="invisble") {
-      if (bubble.colour=="blue")
-        fill(#0000FF);
-      circle(this.xPos,this.yPos,2*apothem);
-    }
+    if (bubble.outline)
+      stroke(0);
+    else
+      noStroke();
+    fill(bubble.col);
+    circle(this.xPos,this.yPos,2*apothem);
+    
   }
   
 }

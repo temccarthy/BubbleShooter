@@ -1,25 +1,25 @@
 //Bubble Shooter reverse engineering
 
-
-
 /* TODO
-enums
-
-draw bubble in cell, THEN grid class (x and y position)
-
+- mouse boolean that when mouse is pressed, is true until bubble lands in grid
+- shooting/moving bubble from main cell to grid
 
 */
 PShape hexagon;
-int radius=20;
+int radius=18;
 float apothem = sqrt(3)*radius/2;
-int WIDTH = round(apothem*35);
-int HEIGHT = round((2*radius+21*radius));
+int WIDTH = round(apothem*35)+1;
+int HEIGHT = round(radius+1.5*radius*18);
 
-Grid grid = new Grid(new Cell[15][17]);
+Grid grid = new Grid(new Cell[15][17],new Cell[6]);
+Arrow arrow = new Arrow();
 
+boolean mouse;
+  
+  
 
 void settings(){
-  size(WIDTH+1,HEIGHT);
+  size(WIDTH,HEIGHT);
 }
 
 void setup() {
@@ -39,16 +39,13 @@ void setup() {
   
   grid.populate();
   
-  
 }
-
-
 
 void draw() {
   background(255);
   
   //GRID
-  
+  /*
   for (int i=0; i<15; i++) {
     if (i % 2 == 0) {
       for (int j=0; j<17; j++) {
@@ -63,22 +60,12 @@ void draw() {
       
     }
   }
+  */
   
   
-  
-  //Bubbles?
-  for (int i=0; i<15; i++) {
-    for (int j=0; j<17; j++) {
-      fill(#FF0000);
-      noStroke();
-      circle(grid.cellGrid[i][j].xPos,grid.cellGrid[i][j].yPos,2*apothem-4);
-        
-    }
-    
-  }
-  
-  
-  
+  grid.drawGrid();
+  arrow.drawArrow();
+  System.out.println(mouse);
   
   
 }

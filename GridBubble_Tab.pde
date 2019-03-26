@@ -1,8 +1,10 @@
 public class GridBubble {
-  String colour; //{red, yellow, green, cyan, blue, purple, invisible};
+  color col;
+  boolean outline;
   
-  public GridBubble(String colour) {
-    this.colour = colour;
-  } 
+  public GridBubble(color col, boolean outline) {
+    this.col = col;
+    this.outline = outline;
+  }
   
 }
