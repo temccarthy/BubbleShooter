@@ -3,25 +3,34 @@ public class Cell {
   int radius=17;
   float apothem = sqrt(3)*radius/2;
   
-  GridBubble bubble;
+  Bubble bubble;
   int xPos;
   int yPos;
   
-  Cell(GridBubble bubble, int xPos, int yPos){
+  Cell(Bubble bubble, int xPos, int yPos){
     this.bubble = bubble;
     this.xPos = xPos;
     this.yPos = yPos;
   }
   
-    
+  // maybe can be shortened
   public void drawBubble(){
-    if (bubble.outline)
-      stroke(0);
-    else
-      noStroke();
-    fill(bubble.col);
-    circle(this.xPos,this.yPos,2*apothem);
-    
+    if (bubble.outline) {
+      if (bubble.col == INV)
+        stroke(0);
+      else {
+        noStroke();
+        bubble.drawBubble();
+      }
+    }
+    else {
+      if (bubble.col != INV)
+        noStroke();
+        bubble.drawBubble();
+    }
   }
+  
+  
+  
   
 }

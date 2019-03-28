@@ -6,17 +6,15 @@
 
 */
 PShape hexagon;
-int radius=18;
-float apothem = sqrt(3)*radius/2;
+int gRadius=18; // grid radius
+float apothem = sqrt(3)*gRadius/2;
 int WIDTH = round(apothem*35)+1;
-int HEIGHT = round(radius+1.5*radius*18);
+int HEIGHT = round(gRadius+1.5*gRadius*18);
 
-Grid grid = new Grid(new Cell[15][17],new Cell[6]);
+Grid grid = new Grid();
 Arrow arrow = new Arrow();
 
 boolean mouse;
-  
-  
 
 void settings(){
   size(WIDTH,HEIGHT);
@@ -31,7 +29,7 @@ void setup() {
   hexagon = createShape();
   hexagon.beginShape();
   for (int i = 0; i<=6; i++) {
-    hexagon.vertex(radius*cos(angle+sixty), radius*sin(angle+sixty));
+    hexagon.vertex(gRadius*cos(angle+sixty), gRadius*sin(angle+sixty));
     sixty+=60.0*PI/180.0;
   }
   hexagon.endShape();
@@ -65,7 +63,6 @@ void draw() {
   
   grid.drawGrid();
   arrow.drawArrow();
-  System.out.println(mouse);
   
   
 }

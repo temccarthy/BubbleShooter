@@ -12,7 +12,6 @@ public class Colour {
  
   public color randomColour(){
     int rand = int(random(0,6));
-    //change back colors
     if (rand == 0)
       return RED;
     if (rand == 1)
