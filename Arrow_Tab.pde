@@ -10,7 +10,7 @@ public class Arrow {
   //float RAD = aBubble.RAD;
   //float APO = aBubble.APO;
   
-  int RAD=17;
+  int RAD=18;
   float APO = sqrt(3)*RAD/2;
   
   Arrow(){

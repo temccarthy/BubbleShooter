@@ -1,7 +1,7 @@
 public class Bubble {
   
-  int RAD=17; // rad of hexagon
-  float APO = sqrt(3)*RAD/2; //apothem of hexagon; radius of circle
+  int RAD=17; // rad of circle, slightly smaller than hexagon
+  float APO = sqrt(3)*RAD/2; // apothem of hexagon; radius of circle
   
   color col;
   boolean outline;
@@ -15,8 +15,8 @@ public class Bubble {
   /*
   dont need 2 different bubbles - just dont use this.x and this.y when in cell/grid
   BUT if you do that, then when a bubble is in a cell, you have 2 positions that are the same: cell and bubble - redundant
-  
   */
+  
   public Bubble(color col, boolean outline) {
     this.col = col;
     this.outline = outline;
@@ -42,7 +42,7 @@ public class Bubble {
   public void drawBubble(){
     this.move();
     fill(this.col);
-    circle(this.xPos,this.yPos,APO);
+    circle(this.xPos,this.yPos,2*APO);
   }
   
   public void shoot(){
