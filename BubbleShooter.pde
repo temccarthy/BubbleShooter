@@ -38,7 +38,7 @@ void draw() {
   
   background(255); //refresh
   
-  hGrid.drawHexGrid();
+  //hGrid.drawHexGrid();
   
   grid.drawGrid();
   arrow.drawArrow();

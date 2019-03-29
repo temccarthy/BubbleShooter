@@ -6,49 +6,55 @@ public class Bubble {
   color col;
   boolean outline;
   float angle;
+  boolean updated;
   boolean shot;
   boolean inCell;
   float xPos;
   float yPos;
+  float dx;
+  float dy;
+  int vel = 5;
   
-  
-  /*
-  dont need 2 different bubbles - just dont use this.x and this.y when in cell/grid
-  BUT if you do that, then when a bubble is in a cell, you have 2 positions that are the same: cell and bubble - redundant
-  */
   
   public Bubble(color col, boolean outline) {
     this.col = col;
     this.outline = outline;
     this.shot=false;
     this.inCell=true;
+    this.updated=false;
   }
   
   
   //needs reflector at wall
   public void move(){
     if (shot && !inCell) {
-      int vel = 5;
+      this.xPos+=this.dx;
+      this.yPos+=this.dy;
       
-      float dx= vel*cos(this.angle);
-      float dy= vel*sin(this.angle);
       
-      this.xPos+=dx;
-      this.yPos+=dy;
+      if (this.xPos <= 0+RAD || this.xPos >= WIDTH-RAD)
+        this.dx=-this.dx;
       
     }
   }
   
   public void drawBubble() {
+    //System.out.println(arrow.checkAng);
     fill(this.col);
     circle(this.xPos,this.yPos,2*APO);
   }
   
   public void shoot() {
-    
     this.inCell=false;
-    this.angle = arrow.checkAng; // cant have arrow here
+    if (!this.updated) // this method of checking arrow angle is eh, can be refactored
+      this.dx = this.vel*cos(this.angle);
+      this.dy = this.vel*sin(this.angle);
+      this.angle = arrow.checkAng; // cant have arrow here
+      arrow.show=false;
+      this.updated=true;
+      System.out.println(updated);
     this.shot = true;
+    
     this.move();
   }
   
