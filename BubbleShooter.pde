@@ -16,6 +16,15 @@ Arrow arrow = new Arrow();
 
 boolean mouse;
 
+
+
+
+public void mousePressed(){
+  //if bottom bubble hasn't been shot:
+  mouse=true;
+  //once it gets into a cell, reset mouse to false
+}
+
 void settings(){
   size(WIDTH,HEIGHT);
 }
@@ -65,6 +74,10 @@ void draw() {
   
   grid.drawGrid();
   arrow.drawArrow();
+  System.out.println(mouse);
+  if (mouse) {
+    grid.shootMain();
+  }
   
   
 }

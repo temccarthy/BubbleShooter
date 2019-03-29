@@ -19,7 +19,6 @@ public class Grid {
   }
 
   public void populate() {
-    System.out.println("start grid pop");
     for (int i=0; i<15; i++) { // 15 columns
       for (int j=0; j<17; j++) { // 17 rows
         if (i % 2 == 0){
@@ -35,23 +34,27 @@ public class Grid {
     }
     this.mainCell = new Cell(new Bubble(aColour.randomColour(), false), int(gAPO+2*gAPO*8), int(gRAD+1.5*gRAD*16));
     this.bottomCellGrid[0].bubble.col=aColour.randomColour();
-    System.out.println("end grid pop");
   }
   
   
   public void drawGrid() {
     for (Cell[] cellRow : this.cellGrid) {
       for (Cell aCell : cellRow) { 
-        aCell.drawBubble(); 
+        aCell.drawCell(); 
       }
     }
     for (Cell aCell : this.bottomCellGrid){
-      aCell.drawBubble(); //all but one need to be empty
+      aCell.drawCell(); //all but one need to be empty
     }
-    mainCell.drawBubble();
+    mainCell.drawCell();
   }
   
-  public void shoot() {
+  public void shootMain() {
+    mainCell.bubble.shoot();
+    
+    
+    
+    
   }
   
 }

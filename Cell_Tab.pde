@@ -14,7 +14,7 @@ public class Cell {
   }
   
   // maybe can be shortened
-  public void drawBubble(){
+  public void drawCell(){
     
     //need to slowly move bubble when it collides with cell
     if (bubble.inCell) {

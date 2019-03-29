@@ -39,14 +39,16 @@ public class Bubble {
     }
   }
   
-  public void drawBubble(){
-    this.move();
+  public void drawBubble() {
     fill(this.col);
     circle(this.xPos,this.yPos,2*APO);
   }
   
-  public void shoot(){
-    
+  public void shoot() {
+    this.inCell=false;
+    this.angle = arrow.ang; // cant have arrow here
+    this.shot = true;
+    this.move();
   }
   
   
