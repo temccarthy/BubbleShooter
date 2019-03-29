@@ -4,10 +4,10 @@ public class Cell {
   //float apothem = sqrt(3)*radius/2;
   
   Bubble bubble;
-  int xPos;
-  int yPos;
+  float xPos;
+  float yPos;
   
-  Cell(Bubble bubble, int xPos, int yPos) {
+  Cell(Bubble bubble, float xPos, float yPos) {
     this.bubble = bubble;
     this.xPos = xPos;
     this.yPos = yPos;

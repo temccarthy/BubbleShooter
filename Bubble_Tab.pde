@@ -28,7 +28,7 @@ public class Bubble {
   //needs reflector at wall
   public void move(){
     if (shot && !inCell) {
-      int vel = 3;
+      int vel = 5;
       
       float dx= vel*cos(this.angle);
       float dy= vel*sin(this.angle);
@@ -45,8 +45,9 @@ public class Bubble {
   }
   
   public void shoot() {
+    
     this.inCell=false;
-    this.angle = arrow.ang; // cant have arrow here
+    this.angle = arrow.checkAng; // cant have arrow here
     this.shot = true;
     this.move();
   }
