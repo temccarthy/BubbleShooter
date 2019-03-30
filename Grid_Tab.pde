@@ -32,8 +32,8 @@ public class Grid {
     for (int i=0; i<6; i++) {
       this.bottomCellGrid[i] = new Cell(new Bubble(INV,true), 2*gAPO+37*i, gRAD+1.5*gRAD*16);
     }
-    this.mainCell = new Cell(new Bubble(aColour.randomColour(), false), gAPO+2*gAPO*8, gRAD+1.5*gRAD*16);
     this.bottomCellGrid[0].bubble.col=aColour.randomColour();
+    this.mainCell = new Cell(new Bubble(aColour.randomColour(), false), gAPO+2*gAPO*8, gRAD+1.5*gRAD*16);
   }
   
   

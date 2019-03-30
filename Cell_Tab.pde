@@ -22,19 +22,10 @@ public class Cell {
       bubble.yPos = this.yPos;
     }
     
-    if (bubble.outline) {
-      if (bubble.col == INV)
-        stroke(0);
-        
-      else {
-        noStroke();
+    if (bubble.outline)
       bubble.drawBubble();
-      }
-    }
-    
     else {
       if (bubble.col != INV)
-        noStroke();
         bubble.drawBubble();
     }
     

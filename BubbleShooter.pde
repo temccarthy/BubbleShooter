@@ -1,10 +1,10 @@
 //Bubble Shooter reverse engineering
 
 /* TODO
-- mouse boolean that when mouse is pressed, is true until bubble lands in grid
-- shooting/moving bubble from main cell to grid
-
+- REFACTOR
+- Plan out collision then putting bubbles into grid
 */
+
 int gRadius=18; // grid radius
 float apothem = sqrt(3)*gRadius/2;
 int WIDTH = round(apothem*35)+1;
@@ -42,7 +42,6 @@ void draw() {
   
   grid.drawGrid();
   arrow.drawArrow();
-  //System.out.println(mouse);
   if (mouse) {
     grid.shootMain();
   }

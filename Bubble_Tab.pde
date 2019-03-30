@@ -39,22 +39,24 @@ public class Bubble {
   }
   
   public void drawBubble() {
-    //System.out.println(arrow.checkAng);
+    if (outline)
+      stroke(0);
+    else
+      noStroke();
     fill(this.col);
     circle(this.xPos,this.yPos,2*APO);
   }
   
   public void shoot() {
     this.inCell=false;
-    if (!this.updated) // this method of checking arrow angle is eh, can be refactored
+    if (!this.updated) { // this method of checking arrow angle is eh, can be refactored
+      this.angle = atan2(mouseY-(RAD+1.5*RAD*16), mouseX-(APO+2*APO*8)); //arrow.checkAng; // cant have arrow here
       this.dx = this.vel*cos(this.angle);
       this.dy = this.vel*sin(this.angle);
-      this.angle = arrow.checkAng; // cant have arrow here
       arrow.show=false;
       this.updated=true;
-      System.out.println(updated);
-    this.shot = true;
-    
+      this.shot = true;
+    }
     this.move();
   }
   
