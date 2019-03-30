@@ -15,6 +15,8 @@ public class Bubble {
   float dy;
   int vel = 5;
   
+  boolean collided=false;
+  
   
   public Bubble(color col, boolean outline) {
     this.col = col;
@@ -50,7 +52,7 @@ public class Bubble {
   public void shoot() {
     this.inCell=false;
     if (!this.updated) { // this method of checking arrow angle is eh, can be refactored
-      this.angle = atan2(mouseY-(RAD+1.5*RAD*16), mouseX-(APO+2*APO*8)); //arrow.checkAng; // cant have arrow here
+      this.angle = arrow.checkAng; // cant have arrow here
       this.dx = this.vel*cos(this.angle);
       this.dy = this.vel*sin(this.angle);
       arrow.show=false;
@@ -58,6 +60,8 @@ public class Bubble {
       this.shot = true;
     }
     this.move();
+    if (this.inCell)
+      this.updated=false;
   }
   
   

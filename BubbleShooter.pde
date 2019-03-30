@@ -1,8 +1,10 @@
 //Bubble Shooter reverse engineering
 
 /* TODO
-- REFACTOR
-- Plan out collision then putting bubbles into grid
+- double bubble problem
+- wrong color when appears in grid
+- cant change angle on new shot
+- movement?
 */
 
 int gRadius=18; // grid radius
@@ -38,12 +40,14 @@ void draw() {
   
   background(255); //refresh
   
-  //hGrid.drawHexGrid();
+  hGrid.drawHexGrid();
   
   grid.drawGrid();
   arrow.drawArrow();
   if (mouse) {
     grid.shootMain();
+    //if (grid.mainCell.bubble.collided)
+      //System.out.println("collided!");
   }
   
   
