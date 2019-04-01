@@ -10,24 +10,21 @@ public class Arrow {
   //float RAD = aBubble.RAD;
   //float APO = aBubble.APO;
   
-  int RAD=18;
-  float APO = sqrt(3)*RAD/2;
-  
   Arrow(){
     this.show = true;
   }
   
   public void drawArrow() {
     if (this.show) {
-      ang=atan2(mouseY-(RAD+1.5*RAD*16), mouseX-(APO+2*APO*8));
+      ang=atan2(mouseY-(gRAD+1.5*gRAD*16), mouseX-(gAPO+2*gAPO*8));
       if (ang > -PI+.2 && ang < 0-.2)
         checkAng = ang;
       stroke(131,131,131);
       fill(131,131,131);
-      line((APO+2*APO*8), (RAD+1.5*RAD*16), (APO+2*APO*8)+length*cos(checkAng), (RAD+1.5*RAD*16)+length*sin(checkAng));
-      triangle((APO+2*APO*8)+length*cos(checkAng), (RAD+1.5*RAD*16)+length*sin(checkAng),
-        (APO+2*APO*8)+(length-arrowHeadLength)*cos(checkAng+arrowHeadAngle), (RAD+1.5*RAD*16)+(length-arrowHeadLength)*sin(checkAng+arrowHeadAngle),
-        (APO+2*APO*8)+(length-arrowHeadLength)*cos(checkAng-arrowHeadAngle), (RAD+1.5*RAD*16)+(length-arrowHeadLength)*sin(checkAng-arrowHeadAngle));
+      line((gAPO+2*gAPO*8), (gRAD+1.5*gRAD*16), (gAPO+2*gAPO*8)+length*cos(checkAng), (gRAD+1.5*gRAD*16)+length*sin(checkAng));
+      triangle((gAPO+2*gAPO*8)+length*cos(checkAng), (gRAD+1.5*gRAD*16)+length*sin(checkAng),
+        (gAPO+2*gAPO*8)+(length-arrowHeadLength)*cos(checkAng+arrowHeadAngle), (gRAD+1.5*gRAD*16)+(length-arrowHeadLength)*sin(checkAng+arrowHeadAngle),
+        (gAPO+2*gAPO*8)+(length-arrowHeadLength)*cos(checkAng-arrowHeadAngle), (gRAD+1.5*gRAD*16)+(length-arrowHeadLength)*sin(checkAng-arrowHeadAngle));
     }
   }
   

@@ -1,8 +1,5 @@
 public class Cell {
   
-  //int radius=17;
-  //float apothem = sqrt(3)*radius/2;
-  
   Bubble bubble;
   float xPos;
   float yPos;
@@ -18,8 +15,10 @@ public class Cell {
     
   //need to slowly move bubble when it collides with cell
     if (bubble.inCell) {
+      
       bubble.xPos = this.xPos;
       bubble.yPos = this.yPos;
+      
     }
     
     if (bubble.outline)

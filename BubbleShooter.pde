@@ -7,10 +7,10 @@
 - movement?
 */
 
-int gRadius=18; // grid radius
-float apothem = sqrt(3)*gRadius/2;
-int WIDTH = round(apothem*35)+1;
-int HEIGHT = round(gRadius+1.5*gRadius*18);
+public int gRAD=19; // grid radius
+public float gAPO = sqrt(3)*gRAD/2;
+int WIDTH = round(gAPO*35)+1;
+int HEIGHT = round(gRAD+1.5*gRAD*18);
 
 Grid grid = new Grid();
 Arrow arrow = new Arrow();
@@ -30,7 +30,7 @@ void settings(){
 }
 
 void setup() {
-  //frameRate(60);
+  //frameRate(15);
   hGrid.makeHex();
   grid.populate();
   

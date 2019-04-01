@@ -6,9 +6,9 @@ public class Bubble {
   color col;
   boolean outline;
   float angle;
-  boolean updated;
-  boolean shot;
-  boolean inCell;
+  boolean updated = false;
+  boolean shot = false;
+  boolean inCell = true;
   float xPos;
   float yPos;
   float dx;
@@ -21,9 +21,6 @@ public class Bubble {
   public Bubble(color col, boolean outline) {
     this.col = col;
     this.outline = outline;
-    this.shot=false;
-    this.inCell=true;
-    this.updated=false;
   }
   
   
@@ -50,18 +47,25 @@ public class Bubble {
   }
   
   public void shoot() {
-    this.inCell=false;
+    
     if (!this.updated) { // this method of checking arrow angle is eh, can be refactored
+      this.inCell=false;
       this.angle = arrow.checkAng; // cant have arrow here
       this.dx = this.vel*cos(this.angle);
       this.dy = this.vel*sin(this.angle);
       arrow.show=false;
-      this.updated=true;
       this.shot = true;
+      this.updated=true;
+      println("updated");
     }
     this.move();
-    if (this.inCell)
-      this.updated=false;
+    
+  }
+  public void resetBubble(){
+    println("incel");
+    this.updated=false;
+    arrow.show=true;
+    //this.shot=false;
   }
   
   

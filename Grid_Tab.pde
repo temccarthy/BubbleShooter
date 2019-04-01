@@ -4,16 +4,18 @@ public class Grid {
   Cell[] bottomCellGrid= new Cell[6];
   Cell mainCell;
   
+  boolean stop = false; // replace with break
+  
   /*
   Bubble aBubble;
   //float RAD = aBubble.RAD;
   //float APO = aBubble.APO;
   */
-  
-  int gRAD=18; // grid radius
-  float gAPO = sqrt(3)*gRAD/2;
 
   Colour aColour = new Colour();
+  
+  
+  boolean hasCollided;
 
   Grid() {
   }
@@ -53,13 +55,14 @@ public class Grid {
     mainCell.bubble.shoot();
     for (int i=0; i<15; i++) { // 15 columns
       for (int j=0; j<17; j++) { // 17 rows
-        if (cellGrid[i][j].bubble.col != INV) {
+        if (cellGrid[i][j].bubble.col != INV && !stop) { 
           //stroke(0);
           //line(aCell.xPos,aCell.yPos,mainCell.bubble.xPos,mainCell.bubble.yPos);
           this.collide(cellGrid[i][j], i, j);
         }
       }
     }
+    stop = false;
   }
   
   public void collide(Cell aCell,int i, int j) {
@@ -110,13 +113,17 @@ public class Grid {
       else {
         cellGrid[i][j-1].bubble.col=mainCell.bubble.col;
       }
+      
       mainCell.bubble.inCell=true;
+      mainCell.bubble.resetBubble();
       mouse=false;
-      arrow.show=true;
+      //arrow.show=true;
       
       mainCell.bubble.col=bottomCellGrid[0].bubble.col;
       bottomCellGrid[0].bubble.col=aColour.randomColour();
-      //mainCell.bubble.collided=true;
+      mainCell.bubble.collided=true;
+      stop=true;
+      
     }
     
     //find dist from cell center to main bubble center

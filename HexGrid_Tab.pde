@@ -3,10 +3,8 @@ class HexGrid {
   //HexGrid(){}
   
   PShape hexagon;
-  int gRadius=18; // grid radius
-  float apothem = sqrt(3)*gRadius/2;
-  int WIDTH = round(apothem*35)+1;
-  int HEIGHT = round(gRadius+1.5*gRadius*18);
+  int WIDTH = round(gAPO*35)+1;
+  int HEIGHT = round(gRAD+1.5*gRAD*18);
   
   float angle=30.0*PI/180.0;
   float sixty=0.0;
@@ -16,7 +14,7 @@ class HexGrid {
     hexagon.beginShape();
     
     for (int i = 0; i<=6; i++) {
-      hexagon.vertex(gRadius*cos(angle+sixty), gRadius*sin(angle+sixty));
+      hexagon.vertex(gRAD*cos(angle+sixty), gRAD*sin(angle+sixty));
       sixty+=60.0*PI/180.0;
     }
     hexagon.endShape(); 
@@ -26,11 +24,11 @@ class HexGrid {
     for (int i=0; i<15; i++) {
       if (i % 2 == 0) {
         for (int j=0; j<17; j++)
-          shape(hexagon,(apothem+2*apothem*j),(gRadius+1.5*gRadius*i));
+          shape(hexagon,(gAPO+2*gAPO*j),(gRAD+1.5*gRAD*i));
       } 
       else {
         for (int j=0; j<17; j++) {
-          shape(hexagon,2*apothem+(2*apothem*j),gRadius+1.5*gRadius*i);
+          shape(hexagon,2*gAPO+(2*gAPO*j),gRAD+1.5*gRAD*i);
         }
         
       }
