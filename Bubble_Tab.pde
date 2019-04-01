@@ -13,7 +13,7 @@ public class Bubble {
   float yPos;
   float dx;
   float dy;
-  int vel = 5;
+  int vel = 10;
   
   boolean collided=false;
   

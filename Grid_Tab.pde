@@ -66,6 +66,8 @@ public class Grid {
   }
   
   public void collide(Cell aCell,int i, int j) {
+    /*
+    
     float actDist=dist(aCell.xPos,aCell.yPos,mainCell.bubble.xPos,mainCell.bubble.yPos);
     
     float ang=atan2(mainCell.bubble.yPos-aCell.yPos,mainCell.bubble.xPos-aCell.xPos);
@@ -81,6 +83,12 @@ public class Grid {
     
     float hexDist = gRAD/cos(simpAng);
     float collDist = mainCell.bubble.RAD+hexDist;
+    
+    
+    */
+    float actDist=dist(aCell.xPos,aCell.yPos,mainCell.bubble.xPos,mainCell.bubble.yPos);
+    float collDist=2*mainCell.bubble.RAD-8;
+    float ang=atan2(mainCell.bubble.yPos-aCell.yPos,mainCell.bubble.xPos-aCell.xPos);
     
     if (collDist>=actDist) {
       if (ang <= PI/6 && ang > -PI/6) {
