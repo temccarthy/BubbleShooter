@@ -15,8 +15,6 @@ public class Bubble {
   float dy;
   int vel = 10;
   
-  boolean collided=false;
-  
   
   public Bubble(color col, boolean outline) {
     this.col = col;
@@ -56,16 +54,15 @@ public class Bubble {
       arrow.show=false;
       this.shot = true;
       this.updated=true;
-      println("updated");
     }
     this.move();
     
   }
   public void resetBubble(){
-    println("incel");
     this.updated=false;
     arrow.show=true;
-    //this.shot=false;
+    this.shot=false;
+    this.inCell=true;
   }
   
   

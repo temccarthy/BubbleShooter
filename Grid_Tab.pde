@@ -4,18 +4,9 @@ public class Grid {
   Cell[] bottomCellGrid= new Cell[6];
   Cell mainCell;
   
-  boolean stop = false; // replace with break
-  
-  /*
-  Bubble aBubble;
-  //float RAD = aBubble.RAD;
-  //float APO = aBubble.APO;
-  */
+  boolean stopCollision = false; // replace with break
 
   Colour aColour = new Colour();
-  
-  
-  boolean hasCollided;
 
   Grid() {
   }
@@ -23,10 +14,8 @@ public class Grid {
   public void populate() {
     for (int i=0; i<15; i++) { // 15 columns
       for (int j=0; j<17; j++) { // 17 rows
-        if (i % 2 == 0){
+        if (i % 2 == 0)
           this.cellGrid[i][j] = new Cell(new Bubble((i<9) ? aColour.randomColour() : INV,false), gAPO+2*gAPO*j, gRAD+1.5*gRAD*i);
-          //System.out.println(this.cellGrid[i][j].bubble.col);
-        }
         else
           this.cellGrid[i][j] = new Cell(new Bubble((i<9) ? aColour.randomColour() : INV,false), 2*gAPO+(2*gAPO*j), gRAD+1.5*gRAD*i);
       }
@@ -55,39 +44,18 @@ public class Grid {
     mainCell.bubble.shoot();
     for (int i=0; i<15; i++) { // 15 columns
       for (int j=0; j<17; j++) { // 17 rows
-        if (cellGrid[i][j].bubble.col != INV && !stop) { 
-          //stroke(0);
-          //line(aCell.xPos,aCell.yPos,mainCell.bubble.xPos,mainCell.bubble.yPos);
+        if (cellGrid[i][j].bubble.col != INV && !stopCollision) { 
           this.collide(cellGrid[i][j], i, j);
         }
       }
     }
-    stop = false;
+    stopCollision = false;
   }
   
   public void collide(Cell aCell,int i, int j) {
-    /*
-    
-    float actDist=dist(aCell.xPos,aCell.yPos,mainCell.bubble.xPos,mainCell.bubble.yPos);
-    
-    float ang=atan2(mainCell.bubble.yPos-aCell.yPos,mainCell.bubble.xPos-aCell.xPos);
-    float simpAng=ang;
-    while (!(simpAng < PI/6 && simpAng > -PI/6)) {
-      if (simpAng>PI/6) {
-        simpAng-=PI/6;
-      }
-      else if (simpAng<PI/6) {
-        simpAng+=PI/6;
-      }
-    }
-    
-    float hexDist = gRAD/cos(simpAng);
-    float collDist = mainCell.bubble.RAD+hexDist;
-    
-    
-    */
     float actDist=dist(aCell.xPos,aCell.yPos,mainCell.bubble.xPos,mainCell.bubble.yPos);
     float collDist=2*mainCell.bubble.RAD-8;
+    
     float ang=atan2(mainCell.bubble.yPos-aCell.yPos,mainCell.bubble.xPos-aCell.xPos);
     
     if (collDist>=actDist) {
@@ -122,32 +90,16 @@ public class Grid {
         cellGrid[i][j-1].bubble.col=mainCell.bubble.col;
       }
       
-      mainCell.bubble.inCell=true;
-      mainCell.bubble.resetBubble();
       mouse=false;
-      //arrow.show=true;
+      mainCell.bubble.resetBubble();
       
       mainCell.bubble.col=bottomCellGrid[0].bubble.col;
       bottomCellGrid[0].bubble.col=aColour.randomColour();
-      mainCell.bubble.collided=true;
-      stop=true;
+      
+      stopCollision=true;
       
     }
     
-    //find dist from cell center to main bubble center
-      //dist()
-    //find colliding distance
-      //the angle from the bubble to cell
-      //find dist to edge of hexagon based on angle
-      //add radius to get ans
-    //compare dist to coll dist
-      //if actual dist < coll dist
-        //add mainbubble to adjacent cell
-        //old mainbubble not mainbubble
-        //new waiting bubble
-        //old waiting bubb/le = new main bubble
-    
   }
-  
-  
+ 
 }
