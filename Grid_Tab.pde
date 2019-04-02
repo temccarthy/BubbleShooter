@@ -55,6 +55,15 @@ public class Grid {
     stopCollision = false;
   }
   
+  public void resetChecking() {
+    for (Cell[] cellRow : this.cellGrid) {
+      for (Cell aCell : cellRow) { 
+        aCell.bubble.popCheck = false;
+      }
+    }
+    mainCell.bubble.popCheck = false;
+  }
+  
   public void collide(Cell aCell,int i, int j) {
     int newI;
     int newJ;
@@ -132,14 +141,16 @@ public class Grid {
       
       println(newI + " " + newJ + ":");
       println(hex(CGC(newI,newJ)));
+      
       checkPopping(newI, newJ);
+      
       println(numTouching);
       println("");
       if (numTouching<3)
         bottomNum--;
       
-      
-      numTouching=0;
+      this.resetChecking();
+      numTouching=1;
       
       mainCell.bubble.resetBubble();
       
@@ -150,74 +161,69 @@ public class Grid {
     }
   }
   
-  int numTouching=0;
+  int numTouching=1;
   
   public void checkPopping(int i, int j) {
     //println(hex(CGC(i,j)));
     //println(hex(INV));
     //println(i + " " + j);
     
+    this.cellGrid[i][j].bubble.popCheck=true;
+    
     //try {
-      if (hex(CGC(i,j)).equals(hex(CGC(i,j+1))) && !this.cellGrid[i][j].bubble.popCheck) {
+      if (hex(CGC(i,j)).equals(hex(CGC(i,j+1))) && !this.cellGrid[i][j+1].bubble.popCheck) {
         println(i + " " + str(j+1) + ":");
         println(hex(CGC(i,j+1)));
-        this.cellGrid[i][j].bubble.popCheck=true;
-        checkPopping(i,j+1);
         numTouching++;
+        checkPopping(i,j+1);
       }
-      else if (hex(CGC(i,j)).equals(hex(CGC(i,j-1))) && !this.cellGrid[i][j].bubble.popCheck) {
+      if (hex(CGC(i,j)).equals(hex(CGC(i,j-1))) && !this.cellGrid[i][j-1].bubble.popCheck) {
         println(i + " " + str(j-1) + ":");
         println(hex(CGC(i,j-1)));
-        this.cellGrid[i][j].bubble.popCheck=true;
-        checkPopping(i,j-1);
         numTouching++;
+        checkPopping(i,j-1);
       }
-      else if (hex(CGC(i,j)).equals(hex(CGC(i+1,j))) && !this.cellGrid[i][j].bubble.popCheck) {
+      if (hex(CGC(i,j)).equals(hex(CGC(i+1,j))) && !this.cellGrid[i+1][j].bubble.popCheck) {
         println(str(i+1) + " " + str(j) + ":");
         println(hex(CGC(i+1,j)));
-        this.cellGrid[i][j].bubble.popCheck=true;
-        checkPopping(i+1,j);
         numTouching++;
+        checkPopping(i+1,j);
       }
-      else if (hex(CGC(i,j)).equals(hex(CGC(i-1,j))) && !this.cellGrid[i][j].bubble.popCheck) {
+      if (hex(CGC(i,j)).equals(hex(CGC(i-1,j))) && !this.cellGrid[i-1][j].bubble.popCheck) {
         println(str(i-1) + " " + str(j) + ":");
         println(hex(CGC(i-1,j)));
-        this.cellGrid[i][j].bubble.popCheck=true;
-        checkPopping(i-1,j);
         numTouching++;
+        checkPopping(i-1,j);
       }
       
-      else if (i%2==0) {
-        if (hex(CGC(i,j)).equals(hex(CGC(i+1,j-1))) && !this.cellGrid[i][j].bubble.popCheck) {
+      if (i%2==0) {
+        if (hex(CGC(i,j)).equals(hex(CGC(i+1,j-1))) && !this.cellGrid[i+1][j-1].bubble.popCheck) {
           println(str(i+1) + " " + str(j-1) + ":");
           println(hex(CGC(i+1,j-1)));
-          this.cellGrid[i][j].bubble.popCheck=true;
+          numTouching++;          
           checkPopping(i+1,j-1);
-          numTouching++;
         }
-        else if (hex(CGC(i,j)).equals(hex(CGC(i-1,j-1))) && !this.cellGrid[i][j].bubble.popCheck) {
+        if (hex(CGC(i,j)).equals(hex(CGC(i-1,j-1))) && !this.cellGrid[i-1][j-1].bubble.popCheck) {
           println(str(i-1) + " " + str(j-1) + ":");
           println(hex(CGC(i-1,j-1)));
-          this.cellGrid[i][j].bubble.popCheck=true;
+          numTouching++;          
           checkPopping(i-1,j-1);
-          numTouching++;
+
         }
         
       }
       else {
-        if (hex(CGC(i,j)).equals(hex(CGC(i+1,j+1))) && !this.cellGrid[i][j].bubble.popCheck) {
+        if (hex(CGC(i,j)).equals(hex(CGC(i+1,j+1))) && !this.cellGrid[i+1][j+1].bubble.popCheck) {
           println(str(i+1) + " " + str(j+1) + ":");
           println(hex(CGC(i+1,j+1)));
-          this.cellGrid[i][j].bubble.popCheck=true;
-          checkPopping(i+1,j+1);
           numTouching++;
+          checkPopping(i+1,j+1);
         }
-        else if (hex(CGC(i,j)).equals(hex(CGC(i-1,j+1))) && !this.cellGrid[i][j].bubble.popCheck) {
+        if (hex(CGC(i,j)).equals(hex(CGC(i-1,j+1))) && !this.cellGrid[i-1][j+1].bubble.popCheck) {
           println(str(i-1) + " " + str(j+1) + ":");
           println(hex(CGC(i-1,j+1)));
-          this.cellGrid[i][j].bubble.popCheck=true;
-          checkPopping(i-1,j+1);
           numTouching++;
+          checkPopping(i-1,j+1);
         }
        
       //}
