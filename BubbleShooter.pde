@@ -1,10 +1,20 @@
-//Bubble Shooter reverse engineering
+ //Bubble Shooter reverse engineering
 
 /* TODO
-- double bubble problem
-- wrong color when appears in grid
-- cant change angle on new shot
-- movement?
+- popping (recursive)
+ if popping doesnt happen
+   decrease outline number
+- bottom cell grid outlines decrease
+- when bottom grid outlines = 0, new row
+- 
+
+LATER
+
+MUCH LATER
+- keep track of colors
+- change number of rows based on colors
+- lose if in 18th row
+  - if things try to go past 18th row, dont let them
 */
 
 public int gRAD=19; // grid radius
@@ -40,15 +50,13 @@ void draw() {
   
   background(255); //refresh
   
-  //hGrid.drawHexGrid();
+  hGrid.drawHexGrid();
   
   grid.drawGrid();
   arrow.drawArrow();
   if (mouse) {
     grid.shootMain();
-    //if (grid.mainCell.bubble.collided)
-      //System.out.println("collided!");
   }
-  
+  hGrid.drawNumGrid();
   
 }

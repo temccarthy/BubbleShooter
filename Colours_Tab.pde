@@ -1,10 +1,10 @@
-color RED = color (255,0,0);
-color YEL = color (240,230,0);
-color GRE = color (0,255,0);
-color CYA = color (0,255,255);
-color BLU = color (0,0,255);
-color PUR = color (127,0,255);
-color INV = color (0,0,255,0);
+color RED = color (255,0,0,255);
+color YEL = color (240,230,0,255);
+color GRE = color (0,255,0,255);
+color CYA = color (0,255,255,255);
+color BLU = color (0,0,255,255);
+color PUR = color (127,0,255,255);
+color INV = color (1,1,1,0);
 
 public class Colour {
   

@@ -21,19 +21,42 @@ class HexGrid {
   }
   
   public void drawHexGrid(){
-    for (int i=0; i<15; i++) {
+    //textSize(10);
+    //textAlign(CENTER);
+    //fill(0);
+    for (int i=0; i<15+1; i++) {
       if (i % 2 == 0) {
-        for (int j=0; j<17; j++)
+        for (int j=0; j<17; j++){
           shape(hexagon,(gAPO+2*gAPO*j),(gRAD+1.5*gRAD*i));
+          //text(str(i) + " " + str(j), (gAPO+2*gAPO*j),(gRAD+1.5*gRAD*i));
+        }
       } 
       else {
         for (int j=0; j<17; j++) {
           shape(hexagon,2*gAPO+(2*gAPO*j),gRAD+1.5*gRAD*i);
+          //text(str(i) + " " + str(j), 2*gAPO+(2*gAPO*j),gRAD+1.5*gRAD*i);
         }
-        
       }
     }
   }
-  
+  public void drawNumGrid(){
+    textSize(10);
+    textAlign(CENTER);
+    fill(0);
+    for (int i=0; i<15+1; i++) {
+      if (i % 2 == 0) {
+        for (int j=0; j<17; j++){
+          //shape(hexagon,(gAPO+2*gAPO*j),(gRAD+1.5*gRAD*i));
+          text(str(i) + " " + str(j), (gAPO+2*gAPO*j),(gRAD+1.5*gRAD*i));
+        }
+      } 
+      else {
+        for (int j=0; j<17; j++) {
+          //shape(hexagon,2*gAPO+(2*gAPO*j),gRAD+1.5*gRAD*i);
+          text(str(i) + " " + str(j), 2*gAPO+(2*gAPO*j),gRAD+1.5*gRAD*i);
+        }
+      }
+    }
+  }
   
 }
