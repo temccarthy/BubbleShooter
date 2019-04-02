@@ -151,7 +151,6 @@ public class Grid {
       
       if (numTouching<3)
         bottomNum--;
-        
       changeDrawOutline();
       
       //println("numTouching: "+numTouching);
@@ -243,16 +242,16 @@ public class Grid {
   }
   
   public void changeDrawOutline() {
-    if (bottomNum == 0) {
-      bottomNum = (int)random(6);
-    for (Cell aCell : this.bottomCellGrid){
+    if (bottomNum == 0)
+      bottomNum = (int)random(1,6);
+    for (Cell aCell : this.bottomCellGrid) {
       aCell.bubble.outline=false;
     }
-    for (int i = 0; i<bottomNum; i++){
+    for (int i = 0; i<bottomNum; i++) {
       this.bottomCellGrid[i].bubble.outline = true;
     }
     // the 6 will be dependent on the number of colors in the game
       //function for adding row(s), also dependent of the number of colors
-    }
+    
   }
 }

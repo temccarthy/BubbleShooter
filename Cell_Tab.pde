@@ -27,11 +27,7 @@ public class Cell {
       if (bubble.col != INV)
         bubble.drawBubble();
     }
-    
-    
   }
-  
-  
   
   
 }
