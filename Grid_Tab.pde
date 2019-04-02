@@ -38,7 +38,7 @@ public class Grid {
       }
     }
     for (Cell aCell : this.bottomCellGrid){
-      aCell.drawCell(); //all but one need to be empty
+      aCell.drawCell();
     }
     mainCell.drawCell();
   }
@@ -139,20 +139,29 @@ public class Grid {
       
       
       
-      println(newI + " " + newJ + ":");
-      println(hex(CGC(newI,newJ)));
+      //println(newI + " " + newJ + ":");
+      //println(hex(CGC(newI,newJ)));
       
       checkPopping(newI, newJ);
       
-      println(numTouching);
-      println("");
+      
+      //println("");
+      
+      
+      
       if (numTouching<3)
         bottomNum--;
+        
+      changeDrawOutline();
+      
+      //println("numTouching: "+numTouching);
+      println("bottomNum: "+bottomNum);
       
       this.resetChecking();
       numTouching=1;
       
       mainCell.bubble.resetBubble();
+      
       
       mainCell.bubble.col=bottomCellGrid[0].bubble.col;
       bottomCellGrid[0].bubble.col=aColour.randomColour(); 
@@ -164,83 +173,86 @@ public class Grid {
   int numTouching=1;
   
   public void checkPopping(int i, int j) {
-    //println(hex(CGC(i,j)));
-    //println(hex(INV));
-    //println(i + " " + j);
     
     this.cellGrid[i][j].bubble.popCheck=true;
     
-    //try {
-      if (hex(CGC(i,j)).equals(hex(CGC(i,j+1))) && !this.cellGrid[i][j+1].bubble.popCheck) {
-        println(i + " " + str(j+1) + ":");
-        println(hex(CGC(i,j+1)));
-        numTouching++;
-        checkPopping(i,j+1);
+    if (hex(CGC(i,j)).equals(hex(CGC(i,j+1))) && !this.cellGrid[i][j+1].bubble.popCheck) {
+      //println(i + " " + str(j+1) + ":");
+      //println(hex(CGC(i,j+1)));
+      numTouching++;
+      checkPopping(i,j+1);
+    }
+    if (hex(CGC(i,j)).equals(hex(CGC(i,j-1))) && !this.cellGrid[i][j-1].bubble.popCheck) {
+      //println(i + " " + str(j-1) + ":");
+      //println(hex(CGC(i,j-1)));
+      numTouching++;
+      checkPopping(i,j-1);
+    }
+    if (hex(CGC(i,j)).equals(hex(CGC(i+1,j))) && !this.cellGrid[i+1][j].bubble.popCheck) {
+      //println(str(i+1) + " " + str(j) + ":");
+      //println(hex(CGC(i+1,j)));
+      numTouching++;
+      checkPopping(i+1,j);
+    }
+    if (hex(CGC(i,j)).equals(hex(CGC(i-1,j))) && !this.cellGrid[i-1][j].bubble.popCheck) {
+      //println(str(i-1) + " " + str(j) + ":");
+      //println(hex(CGC(i-1,j)));
+      numTouching++;
+      checkPopping(i-1,j);
+    }
+    
+    if (i%2==0) {
+      if (hex(CGC(i,j)).equals(hex(CGC(i+1,j-1))) && !this.cellGrid[i+1][j-1].bubble.popCheck) {
+        //println(str(i+1) + " " + str(j-1) + ":");
+        //println(hex(CGC(i+1,j-1)));
+        numTouching++;          
+        checkPopping(i+1,j-1);
       }
-      if (hex(CGC(i,j)).equals(hex(CGC(i,j-1))) && !this.cellGrid[i][j-1].bubble.popCheck) {
-        println(i + " " + str(j-1) + ":");
-        println(hex(CGC(i,j-1)));
-        numTouching++;
-        checkPopping(i,j-1);
-      }
-      if (hex(CGC(i,j)).equals(hex(CGC(i+1,j))) && !this.cellGrid[i+1][j].bubble.popCheck) {
-        println(str(i+1) + " " + str(j) + ":");
-        println(hex(CGC(i+1,j)));
-        numTouching++;
-        checkPopping(i+1,j);
-      }
-      if (hex(CGC(i,j)).equals(hex(CGC(i-1,j))) && !this.cellGrid[i-1][j].bubble.popCheck) {
-        println(str(i-1) + " " + str(j) + ":");
-        println(hex(CGC(i-1,j)));
-        numTouching++;
-        checkPopping(i-1,j);
+      if (hex(CGC(i,j)).equals(hex(CGC(i-1,j-1))) && !this.cellGrid[i-1][j-1].bubble.popCheck) {
+        //println(str(i-1) + " " + str(j-1) + ":");
+        //println(hex(CGC(i-1,j-1)));
+        numTouching++;          
+        checkPopping(i-1,j-1);
+
       }
       
-      if (i%2==0) {
-        if (hex(CGC(i,j)).equals(hex(CGC(i+1,j-1))) && !this.cellGrid[i+1][j-1].bubble.popCheck) {
-          println(str(i+1) + " " + str(j-1) + ":");
-          println(hex(CGC(i+1,j-1)));
-          numTouching++;          
-          checkPopping(i+1,j-1);
-        }
-        if (hex(CGC(i,j)).equals(hex(CGC(i-1,j-1))) && !this.cellGrid[i-1][j-1].bubble.popCheck) {
-          println(str(i-1) + " " + str(j-1) + ":");
-          println(hex(CGC(i-1,j-1)));
-          numTouching++;          
-          checkPopping(i-1,j-1);
-
-        }
-        
-      }
-      else {
-        if (hex(CGC(i,j)).equals(hex(CGC(i+1,j+1))) && !this.cellGrid[i+1][j+1].bubble.popCheck) {
-          println(str(i+1) + " " + str(j+1) + ":");
-          println(hex(CGC(i+1,j+1)));
-          numTouching++;
-          checkPopping(i+1,j+1);
-        }
-        if (hex(CGC(i,j)).equals(hex(CGC(i-1,j+1))) && !this.cellGrid[i-1][j+1].bubble.popCheck) {
-          println(str(i-1) + " " + str(j+1) + ":");
-          println(hex(CGC(i-1,j+1)));
-          numTouching++;
-          checkPopping(i-1,j+1);
-        }
-       
-      //}
-    //} catch (ArrayIndexOutOfBoundsException e){
-    //  ;
     }
-  
+    else {
+      if (hex(CGC(i,j)).equals(hex(CGC(i+1,j+1))) && !this.cellGrid[i+1][j+1].bubble.popCheck) {
+        //println(str(i+1) + " " + str(j+1) + ":");
+        //println(hex(CGC(i+1,j+1)));
+        numTouching++;
+        checkPopping(i+1,j+1);
+      }
+      if (hex(CGC(i,j)).equals(hex(CGC(i-1,j+1))) && !this.cellGrid[i-1][j+1].bubble.popCheck) {
+        //println(str(i-1) + " " + str(j+1) + ":");
+        //println(hex(CGC(i-1,j+1)));
+        numTouching++;
+        checkPopping(i-1,j+1);
+      }
+    }
   }
   
-  public color CGC(int i, int j){
+  public color CGC(int i, int j) { // returns Cell Grid Color CGC
     try {
       return this.cellGrid[i][j].bubble.col;
-    } catch (ArrayIndexOutOfBoundsException e){
-      return color (5,5,5,5);
+    }
+    catch (ArrayIndexOutOfBoundsException e) {
+      return color (5,5,5,5); // color that nothing matches with
     }
   }
   
-  
-  
+  public void changeDrawOutline() {
+    if (bottomNum == 0) {
+      bottomNum = (int)random(6);
+    for (Cell aCell : this.bottomCellGrid){
+      aCell.bubble.outline=false;
+    }
+    for (int i = 0; i<bottomNum; i++){
+      this.bottomCellGrid[i].bubble.outline = true;
+    }
+    // the 6 will be dependent on the number of colors in the game
+      //function for adding row(s), also dependent of the number of colors
+    }
+  }
 }

@@ -4,7 +4,7 @@
 - popping (recursive)
  if popping doesnt happen
    decrease outline number
-- bottom cell grid outlines decrease
+- bottom cell grid outlines decrease <------
 - when bottom grid outlines = 0, new row
 - 
 
