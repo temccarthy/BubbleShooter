@@ -16,6 +16,7 @@ public class Bubble {
   int vel = 10;
   
   boolean popCheck = false;
+  boolean delete = false;
   
   
   public Bubble(color col, boolean outline) {

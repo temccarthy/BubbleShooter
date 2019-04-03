@@ -59,6 +59,7 @@ public class Grid {
     for (Cell[] cellRow : this.cellGrid) {
       for (Cell aCell : cellRow) { 
         aCell.bubble.popCheck = false;
+        aCell.bubble.delete=false;
       }
     }
     mainCell.bubble.popCheck = false;
@@ -150,6 +151,7 @@ public class Grid {
       else{
         println(newI+" "+newJ);
         pop(newI,newJ);
+        delete();
       }
       this.resetChecking();
       
@@ -222,15 +224,16 @@ public class Grid {
   
   public void pop(int i, int j){
     this.cellGrid[i][j].bubble.popCheck=true;
+    this.cellGrid[i][j].bubble.delete=true;
     
     if (hex(CGC(i,j)).equals(hex(CGC(i,j+1))) && !this.cellGrid[i][j+1].bubble.popCheck) {
       println(i+" "+str(j+1));
-      this.cellGrid[i][j+1].bubble.col=INV;
+      //this.cellGrid[i][j+1].bubble.col=INV;
       pop(i,j+1);
     }
     if (hex(CGC(i,j)).equals(hex(CGC(i,j-1))) && !this.cellGrid[i][j-1].bubble.popCheck) {
       println(i+" "+str(j-1));
-      this.cellGrid[i][j-1].bubble.col=INV;
+      //this.cellGrid[i][j-1].bubble.col=INV;
       pop(i,j-1);
     }
     if (hex(CGC(i,j)).equals(hex(CGC(i+1,j))) && !this.cellGrid[i+1][j].bubble.popCheck) {
@@ -240,31 +243,31 @@ public class Grid {
     }
     if (hex(CGC(i,j)).equals(hex(CGC(i-1,j))) && !this.cellGrid[i-1][j].bubble.popCheck) {
       println(str(i-1)+" "+j);
-      this.cellGrid[i-1][j].bubble.col=INV;
+      //this.cellGrid[i-1][j].bubble.col=INV;
       pop(i-1,j);
     }
     
     if (i%2==0) {
       if (hex(CGC(i,j)).equals(hex(CGC(i+1,j-1))) && !this.cellGrid[i+1][j-1].bubble.popCheck) {
         println(str(i+1)+" "+str(j-1));
-        this.cellGrid[i+1][j-1].bubble.col=INV;         
+        //this.cellGrid[i+1][j-1].bubble.col=INV;         
         pop(i+1,j-1);
       }
       if (hex(CGC(i,j)).equals(hex(CGC(i-1,j-1))) && !this.cellGrid[i-1][j-1].bubble.popCheck) {
         println(str(i-1)+" "+str(j-1));
-        this.cellGrid[i-1][j-1].bubble.col=INV;         
+        //this.cellGrid[i-1][j-1].bubble.col=INV;         
         pop(i-1,j-1);
       }
     }
     else {
       if (hex(CGC(i,j)).equals(hex(CGC(i+1,j+1))) && !this.cellGrid[i+1][j+1].bubble.popCheck) {
         println(str(i+1)+" "+str(j+1));
-        this.cellGrid[i+1][j+1].bubble.col=INV;
+        //this.cellGrid[i+1][j+1].bubble.col=INV;
         pop(i+1,j+1);
       }
       if (hex(CGC(i,j)).equals(hex(CGC(i-1,j+1))) && !this.cellGrid[i-1][j+1].bubble.popCheck) {
         println(str(i-1)+" "+str(j+1));
-        this.cellGrid[i-1][j+1].bubble.col=INV;
+        //this.cellGrid[i-1][j+1].bubble.col=INV;
         pop(i-1,j+1);
       }
     }
@@ -273,7 +276,14 @@ public class Grid {
     
   }
   
-  
+  public void delete(){
+    for (Cell[] cellRow : this.cellGrid) {
+      for (Cell aCell : cellRow) { 
+        if (aCell.bubble.delete)
+          aCell.bubble.col = INV;
+      }
+    }
+  }
   
   
   
