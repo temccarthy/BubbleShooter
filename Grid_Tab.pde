@@ -1,3 +1,7 @@
+import java.util.Queue;
+import java.util.ArrayDeque;
+
+
 public class Grid {
 
   Cell[][] cellGrid = new Cell[15+1][17];
@@ -9,7 +13,8 @@ public class Grid {
   Colour aColour = new Colour();
   
   int bottomNum;
-
+  
+  
   Grid() {
   }
 
@@ -149,12 +154,36 @@ public class Grid {
         changeDrawOutline();
       }
       else{
-        println(newI+" "+newJ);
+        //println(newI+" "+newJ);
         pop(newI,newJ);
         delete();
       }
-      this.resetChecking();
+      resetChecking();
       
+      checkTopConnectQ();
+      
+      
+      /*
+      for (int a=0; a<15; a++) { // 15 columns
+        for (int b=0; b<17; b++) { // 17 rows
+          if (cellGrid[a][b].bubble.col != INV){
+            checkTopConnect(a,b);
+            breakrec=false;
+          }
+        }
+      }
+      
+      
+      println(notConnected);
+      
+      
+      for (int c=0;c<notConnected.size()/2; c++) {
+        cellGrid[2*c][2*c+1].bubble.col = INV;
+      }
+      
+      resetChecking();
+      notConnected.clear();
+      */
       
       mainCell.bubble.resetBubble();
       numTouching=1;
@@ -227,53 +256,93 @@ public class Grid {
     this.cellGrid[i][j].bubble.delete=true;
     
     if (hex(CGC(i,j)).equals(hex(CGC(i,j+1))) && !this.cellGrid[i][j+1].bubble.popCheck) {
-      println(i+" "+str(j+1));
-      //this.cellGrid[i][j+1].bubble.col=INV;
       pop(i,j+1);
     }
     if (hex(CGC(i,j)).equals(hex(CGC(i,j-1))) && !this.cellGrid[i][j-1].bubble.popCheck) {
-      println(i+" "+str(j-1));
-      //this.cellGrid[i][j-1].bubble.col=INV;
       pop(i,j-1);
     }
     if (hex(CGC(i,j)).equals(hex(CGC(i+1,j))) && !this.cellGrid[i+1][j].bubble.popCheck) {
-      println(str(i+1)+" "+j);
-      this.cellGrid[i+1][j].bubble.col=INV;
       pop(i+1,j);
     }
     if (hex(CGC(i,j)).equals(hex(CGC(i-1,j))) && !this.cellGrid[i-1][j].bubble.popCheck) {
-      println(str(i-1)+" "+j);
-      //this.cellGrid[i-1][j].bubble.col=INV;
       pop(i-1,j);
     }
-    
     if (i%2==0) {
-      if (hex(CGC(i,j)).equals(hex(CGC(i+1,j-1))) && !this.cellGrid[i+1][j-1].bubble.popCheck) {
-        println(str(i+1)+" "+str(j-1));
-        //this.cellGrid[i+1][j-1].bubble.col=INV;         
+      if (hex(CGC(i,j)).equals(hex(CGC(i+1,j-1))) && !this.cellGrid[i+1][j-1].bubble.popCheck) {        
         pop(i+1,j-1);
       }
-      if (hex(CGC(i,j)).equals(hex(CGC(i-1,j-1))) && !this.cellGrid[i-1][j-1].bubble.popCheck) {
-        println(str(i-1)+" "+str(j-1));
-        //this.cellGrid[i-1][j-1].bubble.col=INV;         
+      if (hex(CGC(i,j)).equals(hex(CGC(i-1,j-1))) && !this.cellGrid[i-1][j-1].bubble.popCheck) {        
         pop(i-1,j-1);
       }
     }
     else {
       if (hex(CGC(i,j)).equals(hex(CGC(i+1,j+1))) && !this.cellGrid[i+1][j+1].bubble.popCheck) {
-        println(str(i+1)+" "+str(j+1));
-        //this.cellGrid[i+1][j+1].bubble.col=INV;
         pop(i+1,j+1);
       }
       if (hex(CGC(i,j)).equals(hex(CGC(i-1,j+1))) && !this.cellGrid[i-1][j+1].bubble.popCheck) {
-        println(str(i-1)+" "+str(j+1));
-        //this.cellGrid[i-1][j+1].bubble.col=INV;
         pop(i-1,j+1);
       }
     }
+  }
+  
+   Queue<Integer> topConnectQ = new ArrayDeque();
+  
+  void checkTopConnectQ(){
+    //starting at 0,0
+    //if not INV
+    //if not in queue already
     
     
+  }
+  
+  
+  
+  boolean breakrec = false;
+  ArrayList<Integer> notConnected = new ArrayList<Integer>();
+  
+  public void checkTopConnect(int i, int j) {// return list of pairs to be deleted
+    this.cellGrid[i][j].bubble.popCheck=true;
+    notConnected.add(i); notConnected.add(j);
+    println("added "+ i + " "+ j);
     
+    if (i!=0) {
+      if ((CGC(i,j+1)!=INV) && j<16 && !this.cellGrid[i][j+1].bubble.popCheck && !breakrec)
+        checkTopConnect(i,j+1);
+      if ((CGC(i,j-1)!=INV) && j>0 && !this.cellGrid[i][j-1].bubble.popCheck && !breakrec)
+        checkTopConnect(i,j-1);
+      if ((CGC(i+1,j)!=INV) && i<15 && !this.cellGrid[i+1][j].bubble.popCheck && !breakrec)
+        checkTopConnect(i+1,j);
+      if ((CGC(i-1,j)!=INV) && i>0 && !this.cellGrid[i-1][j].bubble.popCheck && !breakrec)
+        checkTopConnect(i-1,j);
+      if (i%2==0){
+        if ((CGC(i+1,j-1)!=INV) && i<15 && j>0 && !this.cellGrid[i+1][j-1].bubble.popCheck && !breakrec)
+          checkTopConnect(i+1,j-1);
+        if ((CGC(i-1,j-1)!=INV) && i>0 && j>0 && !this.cellGrid[i-1][j-1].bubble.popCheck && !breakrec)
+          checkTopConnect(i-1,j-1);
+      }
+      else {
+        if ((CGC(i+1,j+1)!=INV) && i<15 && j<16 && !this.cellGrid[i+1][j+1].bubble.popCheck && !breakrec)
+          checkTopConnect(i+1,j+1);
+        if ((CGC(i-1,j+1)!=INV) && i>0 && j<16 && !this.cellGrid[i-1][j+1].bubble.popCheck && !breakrec)
+          checkTopConnect(i-1,j+1);
+          
+      }
+      if (breakrec) {
+        println("cleared");
+        notConnected.clear();
+        return;
+        //final break?
+      }
+      else {
+        //nothing?
+      }
+    }
+    else { //if i==0
+      println("broke");
+      breakrec=true;
+      return;
+      //break recursion
+    }
   }
   
   public void delete(){
@@ -284,9 +353,6 @@ public class Grid {
       }
     }
   }
-  
-  
-  
   
   public void changeDrawOutline() {
     if (bottomNum == 0)
