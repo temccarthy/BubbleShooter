@@ -1,6 +1,4 @@
-import java.util.Queue;
-import java.util.ArrayDeque;
-
+import java.util.LinkedList;
 
 public class Grid {
 
@@ -22,9 +20,9 @@ public class Grid {
     for (int i=0; i<15+1; i++) { // 15+1 rows
       for (int j=0; j<17; j++) { // 17 items per row (last row is for losing)
         if (i % 2 == 0)
-          this.cellGrid[i][j] = new Cell(new Bubble((i<9) ? aColour.randomColour() : INV,false), gAPO+2*gAPO*j, gRAD+1.5*gRAD*i);
+          this.cellGrid[i][j] = new Cell(new Bubble((i<1) ? aColour.randomColour() : INV,false), gAPO+2*gAPO*j, gRAD+1.5*gRAD*i);
         else
-          this.cellGrid[i][j] = new Cell(new Bubble((i<9) ? aColour.randomColour() : INV,false), 2*gAPO+(2*gAPO*j), gRAD+1.5*gRAD*i);
+          this.cellGrid[i][j] = new Cell(new Bubble((i<1) ? aColour.randomColour() : INV,false), 2*gAPO+(2*gAPO*j), gRAD+1.5*gRAD*i);
       }
     }
     this.bottomNum=6;
@@ -160,30 +158,9 @@ public class Grid {
       }
       resetChecking();
       
-      checkTopConnectQ();
       
+      checkTopConnectList();
       
-      /*
-      for (int a=0; a<15; a++) { // 15 columns
-        for (int b=0; b<17; b++) { // 17 rows
-          if (cellGrid[a][b].bubble.col != INV){
-            checkTopConnect(a,b);
-            breakrec=false;
-          }
-        }
-      }
-      
-      
-      println(notConnected);
-      
-      
-      for (int c=0;c<notConnected.size()/2; c++) {
-        cellGrid[2*c][2*c+1].bubble.col = INV;
-      }
-      
-      resetChecking();
-      notConnected.clear();
-      */
       
       mainCell.bubble.resetBubble();
       numTouching=1;
@@ -285,64 +262,60 @@ public class Grid {
     }
   }
   
-   Queue<Integer> topConnectQ = new ArrayDeque();
-  
-  void checkTopConnectQ(){
-    //starting at 0,0
-    //if not INV
-    //if not in queue already
-    
-    
+   LinkedList<GridPos> topConnectList = new LinkedList<GridPos>();
+   
+  void checkTopConnectList(){
+    // check all starting from bottom row, if connected add to list
+    for (int i=0; i<17; i++) {
+      if (this.cellGrid[0][i].bubble.col != INV && !topConnectList.contains(new GridPos(0,i))) {
+        checkTopConnect(0,i);
+        println("ran");
+      }
+    }
+    for (GridPos g : topConnectList){
+      println("" + g.x + " " + g.y);
+    }
   }
-  
-  
-  
-  boolean breakrec = false;
-  ArrayList<Integer> notConnected = new ArrayList<Integer>();
+
   
   public void checkTopConnect(int i, int j) {// return list of pairs to be deleted
-    this.cellGrid[i][j].bubble.popCheck=true;
-    notConnected.add(i); notConnected.add(j);
-    println("added "+ i + " "+ j);
-    
-    if (i!=0) {
-      if ((CGC(i,j+1)!=INV) && j<16 && !this.cellGrid[i][j+1].bubble.popCheck && !breakrec)
-        checkTopConnect(i,j+1);
-      if ((CGC(i,j-1)!=INV) && j>0 && !this.cellGrid[i][j-1].bubble.popCheck && !breakrec)
-        checkTopConnect(i,j-1);
-      if ((CGC(i+1,j)!=INV) && i<15 && !this.cellGrid[i+1][j].bubble.popCheck && !breakrec)
-        checkTopConnect(i+1,j);
-      if ((CGC(i-1,j)!=INV) && i>0 && !this.cellGrid[i-1][j].bubble.popCheck && !breakrec)
-        checkTopConnect(i-1,j);
-      if (i%2==0){
-        if ((CGC(i+1,j-1)!=INV) && i<15 && j>0 && !this.cellGrid[i+1][j-1].bubble.popCheck && !breakrec)
-          checkTopConnect(i+1,j-1);
-        if ((CGC(i-1,j-1)!=INV) && i>0 && j>0 && !this.cellGrid[i-1][j-1].bubble.popCheck && !breakrec)
-          checkTopConnect(i-1,j-1);
+    //println("added "+ i + " "+ j);
+    if ((CGC(i,j+1)!=INV) && j<16 && !topConnectList.contains(new GridPos(i,j+1))){
+      topConnectList.add(new GridPos(i,j+1));
+      checkTopConnect(i,j+1);
+    }
+    if ((CGC(i,j-1)!=INV) && j>0 && !topConnectList.contains(new GridPos(i,j-1))){
+      topConnectList.add(new GridPos(i,j-1));
+      checkTopConnect(i,j-1);
+    }
+    if ((CGC(i+1,j)!=INV) && i<15 && !topConnectList.contains(new GridPos(i+1,j))){
+      topConnectList.add(new GridPos(i+1,j));
+      checkTopConnect(i+1,j);
+    }
+    if ((CGC(i-1,j)!=INV) && i>0 && !topConnectList.contains(new GridPos(i-1,j))){
+      topConnectList.add(new GridPos(i-1,j));
+      checkTopConnect(i-1,j);
+    }
+    if (i%2==0){
+      if ((CGC(i+1,j-1)!=INV) && i<15 && j>0 && !topConnectList.contains(new GridPos(i+1,j-1))){
+        topConnectList.add(new GridPos(i+1,j-1));
+        checkTopConnect(i+1,j-1);
       }
-      else {
-        if ((CGC(i+1,j+1)!=INV) && i<15 && j<16 && !this.cellGrid[i+1][j+1].bubble.popCheck && !breakrec)
-          checkTopConnect(i+1,j+1);
-        if ((CGC(i-1,j+1)!=INV) && i>0 && j<16 && !this.cellGrid[i-1][j+1].bubble.popCheck && !breakrec)
-          checkTopConnect(i-1,j+1);
-          
-      }
-      if (breakrec) {
-        println("cleared");
-        notConnected.clear();
-        return;
-        //final break?
-      }
-      else {
-        //nothing?
+      if ((CGC(i-1,j-1)!=INV) && i>0 && j>0 && !topConnectList.contains(new GridPos(i-1,j-1))){
+        topConnectList.add(new GridPos(i-1,j-1));
+        checkTopConnect(i-1,j-1);
       }
     }
-    else { //if i==0
-      println("broke");
-      breakrec=true;
-      return;
-      //break recursion
-    }
+    else {
+      if ((CGC(i+1,j+1)!=INV) && i<15 && j<16 && !topConnectList.contains(new GridPos(i+1,j+1))){
+        topConnectList.add(new GridPos(i+1,j+1));
+        checkTopConnect(i+1,j+1);
+      }
+      if ((CGC(i-1,j+1)!=INV) && i>0 && j<16 && !topConnectList.contains(new GridPos(i-1,j+1))){
+        topConnectList.add(new GridPos(i-1,j+1));
+        checkTopConnect(i-1,j+1);
+      }
+    }   
   }
   
   public void delete(){
