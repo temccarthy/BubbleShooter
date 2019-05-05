@@ -13,6 +13,9 @@ public class Grid {
   int bottomNum;
   
   
+  
+  
+  
   Grid() {
   }
 
@@ -20,9 +23,9 @@ public class Grid {
     for (int i=0; i<15+1; i++) { // 15+1 rows
       for (int j=0; j<17; j++) { // 17 items per row (last row is for losing)
         if (i % 2 == 0)
-          this.cellGrid[i][j] = new Cell(new Bubble((i<1) ? aColour.randomColour() : INV,false), gAPO+2*gAPO*j, gRAD+1.5*gRAD*i);
+          this.cellGrid[i][j] = new Cell(new Bubble((i<9) ? aColour.randomColour() : INV,false), gAPO+2*gAPO*j, gRAD+1.5*gRAD*i);
         else
-          this.cellGrid[i][j] = new Cell(new Bubble((i<1) ? aColour.randomColour() : INV,false), 2*gAPO+(2*gAPO*j), gRAD+1.5*gRAD*i);
+          this.cellGrid[i][j] = new Cell(new Bubble((i<9) ? aColour.randomColour() : INV,false), 2*gAPO+(2*gAPO*j), gRAD+1.5*gRAD*i);
       }
     }
     this.bottomNum=6;
@@ -159,8 +162,8 @@ public class Grid {
       resetChecking();
       
       
-      checkTopConnectList();
-      
+      LinkedList<GridPos> topConnectList = checkTopConnectList();
+      deleteIfNotConnected(topConnectList);
       
       mainCell.bubble.resetBubble();
       numTouching=1;
@@ -262,62 +265,75 @@ public class Grid {
     }
   }
   
-   LinkedList<GridPos> topConnectList = new LinkedList<GridPos>();
    
-  void checkTopConnectList(){
+   
+  public LinkedList checkTopConnectList(){
+    LinkedList<GridPos> topConnectList = new LinkedList<GridPos>();
     // check all starting from bottom row, if connected add to list
     for (int i=0; i<17; i++) {
       if (this.cellGrid[0][i].bubble.col != INV && !topConnectList.contains(new GridPos(0,i))) {
-        checkTopConnect(0,i);
-        println("ran");
+        checkTopConnect(0,i,topConnectList);
+        //println("ran");
       }
     }
     for (GridPos g : topConnectList){
-      println("" + g.x + " " + g.y);
+      //println("" + g.x + " " + g.y);
     }
+    return topConnectList;
   }
 
   
-  public void checkTopConnect(int i, int j) {// return list of pairs to be deleted
+  public void checkTopConnect(int i, int j, LinkedList<GridPos> topConnectList) {// return list of pairs to be deleted
     //println("added "+ i + " "+ j);
     if ((CGC(i,j+1)!=INV) && j<16 && !topConnectList.contains(new GridPos(i,j+1))){
       topConnectList.add(new GridPos(i,j+1));
-      checkTopConnect(i,j+1);
+      checkTopConnect(i,j+1,topConnectList);
     }
     if ((CGC(i,j-1)!=INV) && j>0 && !topConnectList.contains(new GridPos(i,j-1))){
       topConnectList.add(new GridPos(i,j-1));
-      checkTopConnect(i,j-1);
+      checkTopConnect(i,j-1,topConnectList);
     }
     if ((CGC(i+1,j)!=INV) && i<15 && !topConnectList.contains(new GridPos(i+1,j))){
       topConnectList.add(new GridPos(i+1,j));
-      checkTopConnect(i+1,j);
+      checkTopConnect(i+1,j,topConnectList);
     }
     if ((CGC(i-1,j)!=INV) && i>0 && !topConnectList.contains(new GridPos(i-1,j))){
       topConnectList.add(new GridPos(i-1,j));
-      checkTopConnect(i-1,j);
+      checkTopConnect(i-1,j,topConnectList);
     }
     if (i%2==0){
       if ((CGC(i+1,j-1)!=INV) && i<15 && j>0 && !topConnectList.contains(new GridPos(i+1,j-1))){
         topConnectList.add(new GridPos(i+1,j-1));
-        checkTopConnect(i+1,j-1);
+        checkTopConnect(i+1,j-1,topConnectList);
       }
       if ((CGC(i-1,j-1)!=INV) && i>0 && j>0 && !topConnectList.contains(new GridPos(i-1,j-1))){
         topConnectList.add(new GridPos(i-1,j-1));
-        checkTopConnect(i-1,j-1);
+        checkTopConnect(i-1,j-1,topConnectList);
       }
     }
     else {
       if ((CGC(i+1,j+1)!=INV) && i<15 && j<16 && !topConnectList.contains(new GridPos(i+1,j+1))){
         topConnectList.add(new GridPos(i+1,j+1));
-        checkTopConnect(i+1,j+1);
+        checkTopConnect(i+1,j+1,topConnectList);
       }
       if ((CGC(i-1,j+1)!=INV) && i>0 && j<16 && !topConnectList.contains(new GridPos(i-1,j+1))){
         topConnectList.add(new GridPos(i-1,j+1));
-        checkTopConnect(i-1,j+1);
+        checkTopConnect(i-1,j+1,topConnectList);
       }
     }   
   }
   
+  public void deleteIfNotConnected(LinkedList<GridPos> topConnectList){
+    for (int i=0; i<15+1; i++) { // 15 columns
+      for (int j=0; j<17; j++) { // 17 rows
+        if (this.cellGrid[i][j].bubble.col != INV && !topConnectList.contains(new GridPos(i,j))) {
+          this.cellGrid[i][j].bubble.col=INV;
+        }
+      }
+    }
+    
+  }
+ 
   public void delete(){
     for (Cell[] cellRow : this.cellGrid) {
       for (Cell aCell : cellRow) { 
@@ -328,8 +344,11 @@ public class Grid {
   }
   
   public void changeDrawOutline() {
-    if (bottomNum == 0)
-      bottomNum = (int)random(1,6);
+    if (bottomNum == 0) {
+      bottomNum = (int)random(1,aColour.numColors);
+      println("new line generated!");
+      addLines();
+    }
     for (Cell aCell : this.bottomCellGrid) {
       aCell.bubble.outline=false;
     }
@@ -340,4 +359,28 @@ public class Grid {
       //function for adding row(s), also dependent of the number of colors
     
   }
+  
+  public void addLines(){
+    int lines = 7 - aColour.numColors;
+    
+    for (int i=15+1; i>lines; i--) { // 15 columns
+      for (int j=0; j<17; j++) { // 17 rows
+        try {cellGrid[i+lines][j].bubble.col = cellGrid[i][j].bubble.col;}
+        catch (ArrayIndexOutOfBoundsException e) {}
+      }
+    }
+    
+    for (int i = 0; i < lines; i++){
+      for (int j=0; j<17; j++) {
+        cellGrid[i][j].bubble.col = aColour.randomColour();
+      }
+    }
+    //generate bottom
+    
+    //try addlines
+    
+    // if out of bounds
+     // add til max is 18, then game over
+  }
+  
 }
