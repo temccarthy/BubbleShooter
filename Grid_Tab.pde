@@ -6,13 +6,13 @@ public class Grid {
   Cell[] bottomCellGrid= new Cell[6];
   Cell mainCell;
   
-  boolean stopCollision = false; // replace with break?
+  boolean stopBubbleCollisionCheck = false; // replace with break?
 
   Colour aColour = new Colour();
   
   int bottomNum;
   
-  
+  int populationNum = 9;
   
   
   
@@ -23,9 +23,9 @@ public class Grid {
     for (int i=0; i<15+1; i++) { // 15+1 rows
       for (int j=0; j<17; j++) { // 17 items per row (last row is for losing)
         if (i % 2 == 0)
-          this.cellGrid[i][j] = new Cell(new Bubble((i<9) ? aColour.randomColour() : INV,false), gAPO+2*gAPO*j, gRAD+1.5*gRAD*i);
+          this.cellGrid[i][j] = new Cell(new Bubble((i<populationNum) ? aColour.randomColour() : INV,false), gAPO+2*gAPO*j, gRAD+1.5*gRAD*i);
         else
-          this.cellGrid[i][j] = new Cell(new Bubble((i<9) ? aColour.randomColour() : INV,false), 2*gAPO+(2*gAPO*j), gRAD+1.5*gRAD*i);
+          this.cellGrid[i][j] = new Cell(new Bubble((i<populationNum) ? aColour.randomColour() : INV,false), 2*gAPO+(2*gAPO*j), gRAD+1.5*gRAD*i);
       }
     }
     this.bottomNum=6;
@@ -53,25 +53,38 @@ public class Grid {
     mainCell.bubble.shoot();
     for (int i=0; i<15+1; i++) { // 15 columns
       for (int j=0; j<17; j++) { // 17 rows
-        if (cellGrid[i][j].bubble.col != INV && !stopCollision) { 
-          this.collide(cellGrid[i][j], i, j);
+        if (cellGrid[i][j].bubble.col != INV && !stopBubbleCollisionCheck) { 
+          bubbleCollide(cellGrid[i][j], i, j);
         }
       }
     }
-    stopCollision = false;
+    stopBubbleCollisionCheck = false;
+    if (mainCell.bubble.yPos<=gAPO){
+      bottomCollide();
+    }
   }
   
   public void resetChecking() {
     for (Cell[] cellRow : this.cellGrid) {
       for (Cell aCell : cellRow) { 
         aCell.bubble.popCheck = false;
-        aCell.bubble.delete=false;
+        aCell.bubble.delete = false;
       }
     }
     mainCell.bubble.popCheck = false;
   }
   
-  public void collide(Cell aCell,int i, int j) {
+  public void bottomCollide(){
+    int newI;
+    int newJ;
+    
+    //check which open spot is closest
+    //put bubble there -> coords = newI, newJ
+    bubbleHasCollided(newI, newJ);
+  }
+  
+  
+  public void bubbleCollide(Cell aCell,int i, int j) {
     int newI;
     int newJ;
     
@@ -80,8 +93,8 @@ public class Grid {
     
     float ang=atan2(mainCell.bubble.yPos-aCell.yPos,mainCell.bubble.xPos-aCell.xPos);
     
-    if (collDist>=actDist) {
-      stopCollision=true;
+    if (actDist<=collDist) {
+      stopBubbleCollisionCheck=true; // stop checking for bubble collision
       
       if (ang <= PI/6 && ang > -PI/6) {
         cellGrid[i][j+1].bubble.col=mainCell.bubble.col;
@@ -142,36 +155,39 @@ public class Grid {
         newJ = j-1;
       }
       
-      mouse=false;
-      
-      //println(newI + " " + newJ + ":");
-      //println(hex(CGC(newI,newJ)));
-      
-      checkPopping(newI, newJ);
-      this.resetChecking();
-      
-      if (numTouching<3){
-        bottomNum--;
-        changeDrawOutline();
-      }
-      else{
-        //println(newI+" "+newJ);
-        pop(newI,newJ);
-        delete();
-      }
-      resetChecking();
-      
-      
-      LinkedList<GridPos> topConnectList = checkTopConnectList();
-      deleteIfNotConnected(topConnectList);
-      
-      mainCell.bubble.resetBubble();
-      numTouching=1;
-      mainCell.bubble.col=bottomCellGrid[0].bubble.col;
-      bottomCellGrid[0].bubble.col=aColour.randomColour(); 
-      
+      bubbleHasCollided(newI, newJ); // do things now that the bubble has collided
       
     }
+  }
+  
+  public void bubbleHasCollided(int newI, int newJ){
+    mouse=false;
+      
+    checkPopping(newI, newJ);
+    resetChecking();
+    
+    if (numTouching<3){
+      bottomNum--;
+      changeDrawOutline();
+    }
+    else{
+      //println(newI+" "+newJ);
+      pop(newI,newJ);
+      delete();
+    }
+    resetChecking();
+    
+    
+    LinkedList<GridPos> topConnectList = checkTopConnectList();
+    deleteIfNotConnected(topConnectList);
+    
+    checkColorsPresent();
+    
+    mainCell.bubble.resetBubble();
+    numTouching=1;
+    mainCell.bubble.col=bottomCellGrid[0].bubble.col;
+    bottomCellGrid[0].bubble.col=aColour.randomColour(); 
+    
   }
   
   int numTouching=1;
@@ -382,5 +398,32 @@ public class Grid {
     // if out of bounds
      // add til max is 18, then game over
   }
+  
+  public void checkColorsPresent(){
+    LinkedList<String> colsToBeRemoved = new LinkedList<String>();
+    
+    for (String aCol : aColour.colList2) {
+      boolean colorPresent = false;
+      doubleLoop:
+      for (int i=0; i<15+1; i++) { // 15 columns
+        for (int j=0; j<17; j++) { // 17 rows
+          if (cellGrid[i][j].bubble.col == unhex(aCol)){
+            colorPresent=true;
+            break doubleLoop;
+          }
+        }
+      }
+      if (!colorPresent){
+        colsToBeRemoved.add(aCol);
+      }
+      
+    }
+    for (String aCol : colsToBeRemoved){
+      aColour.removeCol(aCol);
+    }
+    
+  }
+  
+  
   
 }

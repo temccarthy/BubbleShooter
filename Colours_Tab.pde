@@ -7,8 +7,7 @@ color PUR = color (127,0,255,255);
 color INV = color (1,1,1,0);
 
 public class Colour {
-  
-  //color[] colList = {RED,YEL,GRE,CYA,BLU,PUR} ;
+
   ArrayList<String> colList2 = new ArrayList<String>();
   int numColors;
   
@@ -27,27 +26,10 @@ public class Colour {
   
   public color randomColour(){
     int rand = int(random(0,numColors));
-    
-    /*
-    if (rand == 0)
-      return colList[0];
-    if (rand == 1)
-      return colList[0];
-    if (rand == 2)
-      return colList[0];
-    if (rand == 3)
-      return colList[0];
-    if (rand == 4)
-      return colList[0];
-    if (rand == 5)
-      return colList[0];
-      */
-    //return colList[rand];
     return unhex(this.colList2.get(rand));
   }
   
-  public void removeCol(color col){
-    //int i=colList.indexOf(col);
+  public void removeCol(String col){
     colList2.remove(col);
     numColors=colList2.size();
   }

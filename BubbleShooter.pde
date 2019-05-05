@@ -1,20 +1,12 @@
- //Bubble Shooter reverse engineering
+//Bubble Shooter reverse engineering
 
 /* TODO
-- popping (recursive)
- if popping doesnt happen
-   decrease outline number
-- bottom cell grid outlines decrease <------
-- when bottom grid outlines = 0, new row
-- 
+- finish collide with bottom
 
-LATER
+- gameover (move bubble down again?)
+- score?
 
-MUCH LATER
-- keep track of colors
-- change number of rows based on colors
-- lose if in 18th row
-  - if things try to go past 18th row, dont let them
+- refactor 
 */
 
 public int gRAD=19; // grid radius
