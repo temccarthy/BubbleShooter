@@ -12,9 +12,7 @@ public class Grid {
   
   int bottomNum;
   
-  int populationNum = 4;
-  
-  public float collDist=mainCell.bubble.APO+4;
+  int populationNum = 1;
   
   Grid() {
   }
@@ -106,7 +104,7 @@ public class Grid {
     int newJ;
     
     float actDist=dist(aCell.xPos,aCell.yPos,mainCell.bubble.xPos,mainCell.bubble.yPos);
-    
+    float collDist=2*mainCell.bubble.APO;
     
     //stroke(0);
     //line(aCell.xPos,aCell.yPos,mainCell.bubble.xPos,mainCell.bubble.yPos);
@@ -407,7 +405,14 @@ public class Grid {
   
   public void addLines(){
     int lines = 7 - aColour.numColors;
-    println(lines + " new line(s) generated");
+    print(lines + " new line(s) generated with colors ");
+    
+    for (String col : aColour.colList2){
+      print(colorName(col)+" ");
+    }
+    
+    
+    
     //println(lines + " lines added");
     for (int i=15+1; i>=0; i--) { // 15 columns
       for (int j=0; j<17; j++) { // 17 rows

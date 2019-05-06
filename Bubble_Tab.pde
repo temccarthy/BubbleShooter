@@ -13,7 +13,7 @@ public class Bubble {
   float yPos;
   float dx;
   float dy;
-  int vel = 7;
+  int vel = 11;
   
   boolean popCheck = false;
   boolean delete = false;
@@ -28,12 +28,17 @@ public class Bubble {
   //needs reflector at wall
   public void move(){
     if (shot && !inCell) {
-      this.xPos+=this.dx;
-      this.yPos+=this.dy;
+      
       
       //noFill();
       //stroke(0);
-      //circle(this.xPos, this.yPos, this.APO+4);
+      //circle(this.xPos, this.yPos, 2*this.APO);
+      
+      this.xPos+=this.dx;
+      this.yPos+=this.dy;
+      
+      
+      //delay(1000);
       
       if (this.xPos <= 0+RAD || this.xPos >= WIDTH-RAD)
         this.dx=-this.dx;
