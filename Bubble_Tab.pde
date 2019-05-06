@@ -13,7 +13,7 @@ public class Bubble {
   float yPos;
   float dx;
   float dy;
-  int vel = 10;
+  int vel = 7;
   
   boolean popCheck = false;
   boolean delete = false;
@@ -31,6 +31,9 @@ public class Bubble {
       this.xPos+=this.dx;
       this.yPos+=this.dy;
       
+      //noFill();
+      //stroke(0);
+      //circle(this.xPos, this.yPos, this.APO+4);
       
       if (this.xPos <= 0+RAD || this.xPos >= WIDTH-RAD)
         this.dx=-this.dx;
