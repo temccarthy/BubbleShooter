@@ -12,14 +12,14 @@ public class Grid {
   
   int bottomNum;
   
-  int populationNum = 1;
+  int populationNum = 9;
   
   Grid() {
   }
 
   public void populate() {
-    for (int i=0; i<15+1; i++) { // 15+1 rows
-      for (int j=0; j<17; j++) { // 17 items per row (last row is for losing)
+    for (int i=0; i<15+1; i++) { // 15+1 rows (last row is for losing)
+      for (int j=0; j<17; j++) { // 17 items per row 
         if (i % 2 == 0)
           this.cellGrid[i][j] = new Cell(new Bubble((i<populationNum) ? aColour.randomColour() : INV,false), gAPO+2*gAPO*j, gRAD+1.5*gRAD*i);
         else
@@ -112,7 +112,7 @@ public class Grid {
     if (actDist<=collDist) {
       
       float ang=-atan2(mainCell.bubble.yPos-aCell.yPos,mainCell.bubble.xPos-aCell.xPos);
-      println(ang);
+      //println(ang);
       
       stopBubbleCollisionCheck=true; // stop checking for bubble collision
       
@@ -183,24 +183,31 @@ public class Grid {
   
   public void bubbleHasCollided(int newI, int newJ){
     
-    println("new " + colorName(hex(cellGrid[newI][newJ].bubble.col))+ " bubble at "+newI+","+newJ);
+    //println("new " + colorName(hex(cellGrid[newI][newJ].bubble.col))+ " bubble at "+newI+","+newJ);
     //delay(2000);
     
-    mouse=false;
+    mouse=false; // allows mouse to be clicked again 
+    
     
     checkPopping(newI, newJ);
-    resetChecking();
+    println("Things in checkPoppingList: ");
+    for (GridPos g : checkPoppingList){
+      println(g.x + "," + g.y);
+    }
     
-    if (numTouching<3){
+    
+    if (checkPoppingList.size()<3) {
       bottomNum--;
       changeDrawOutline();
     }
-    else{
+    else {
       //println(newI+" "+newJ);
-      pop(newI,newJ);
-      delete();
+      for (GridPos g : checkPoppingList){
+        cellGrid[g.x][g.y].bubble.col = INV;
+      }
+      
     }
-    resetChecking();
+    checkPoppingList.clear();
     
     LinkedList<GridPos> topConnectList = checkTopConnectList();
     deleteIfNotConnected(topConnectList);
@@ -208,7 +215,6 @@ public class Grid {
     checkColorsPresent();
     
     mainCell.bubble.resetBubble();
-    numTouching=1;
     mainCell.bubble.col=bottomCellGrid[0].bubble.col;
     bottomCellGrid[0].bubble.col=aColour.randomColour(); 
     
@@ -218,49 +224,49 @@ public class Grid {
     
   }
   
-  int numTouching=1;
+  
+  LinkedList<GridPos> checkPoppingList = new LinkedList<GridPos>();
   
   public void checkPopping(int i, int j) {
+    //numTouching++;
+    //this.cellGrid[i][j].bubble.popCheck=true;
     
-    this.cellGrid[i][j].bubble.popCheck=true;
-    
-    if (hex(CGC(i,j)).equals(hex(CGC(i,j+1))) && !this.cellGrid[i][j+1].bubble.popCheck) {
-      
-      numTouching++;
+    if (hex(CGC(i,j)).equals(hex(CGC(i,j+1))) && !checkPoppingList.contains(new GridPos(i,j+1))) {
+      checkPoppingList.add(new GridPos(i,j+1));
       checkPopping(i,j+1);
     }
-    if (hex(CGC(i,j)).equals(hex(CGC(i,j-1))) && !this.cellGrid[i][j-1].bubble.popCheck) {
-      numTouching++;
+    if (hex(CGC(i,j)).equals(hex(CGC(i,j-1))) && !checkPoppingList.contains(new GridPos(i,j-1))) {
+      checkPoppingList.add(new GridPos(i,j-1));
       checkPopping(i,j-1);
     }
-    if (hex(CGC(i,j)).equals(hex(CGC(i+1,j))) && !this.cellGrid[i+1][j].bubble.popCheck) {
-      numTouching++;
+    if (hex(CGC(i,j)).equals(hex(CGC(i+1,j))) && !checkPoppingList.contains(new GridPos(i+1,j))) {
+      checkPoppingList.add(new GridPos(i+1,j));
       checkPopping(i+1,j);
     }
-    if (hex(CGC(i,j)).equals(hex(CGC(i-1,j))) && !this.cellGrid[i-1][j].bubble.popCheck) {
-      numTouching++;
+    if (hex(CGC(i,j)).equals(hex(CGC(i-1,j))) && !checkPoppingList.contains(new GridPos(i-1,j))) {
+      checkPoppingList.add(new GridPos(i-1,j));
       checkPopping(i-1,j);
     }
     
     if (i%2==0) {
-      if (hex(CGC(i,j)).equals(hex(CGC(i+1,j-1))) && !this.cellGrid[i+1][j-1].bubble.popCheck) {
-        numTouching++;          
+      if (hex(CGC(i,j)).equals(hex(CGC(i+1,j-1))) && !checkPoppingList.contains(new GridPos(i+1,j-1))) {
+        checkPoppingList.add(new GridPos(i+1,j-1));
         checkPopping(i+1,j-1);
       }
-      if (hex(CGC(i,j)).equals(hex(CGC(i-1,j-1))) && !this.cellGrid[i-1][j-1].bubble.popCheck) {
-        numTouching++;          
+      if (hex(CGC(i,j)).equals(hex(CGC(i-1,j-1))) && !checkPoppingList.contains(new GridPos(i-1,j-1))) {
+        checkPoppingList.add(new GridPos(i-1,j-1));
         checkPopping(i-1,j-1);
 
       }
       
     }
     else {
-      if (hex(CGC(i,j)).equals(hex(CGC(i+1,j+1))) && !this.cellGrid[i+1][j+1].bubble.popCheck) {
-        numTouching++;
+      if (hex(CGC(i,j)).equals(hex(CGC(i+1,j+1))) && !checkPoppingList.contains(new GridPos(i+1,j+1))) {
+        checkPoppingList.add(new GridPos(i+1,j+1));
         checkPopping(i+1,j+1);
       }
-      if (hex(CGC(i,j)).equals(hex(CGC(i-1,j+1))) && !this.cellGrid[i-1][j+1].bubble.popCheck) {
-        numTouching++;
+      if (hex(CGC(i,j)).equals(hex(CGC(i-1,j+1))) && !checkPoppingList.contains(new GridPos(i-1,j+1))) {
+        checkPoppingList.add(new GridPos(i-1,j+1));
         checkPopping(i-1,j+1);
       }
     }
@@ -312,6 +318,7 @@ public class Grid {
    
    
   public LinkedList checkTopConnectList(){
+    
     LinkedList<GridPos> topConnectList = new LinkedList<GridPos>();
     // check all starting from bottom row, if connected add to list
     for (int i=0; i<17; i++) {
@@ -320,9 +327,12 @@ public class Grid {
         //println("ran");
       }
     }
+    
+    /*
     for (GridPos g : topConnectList){
-      //println("" + g.x + " " + g.y);
+      println("" + g.x + " " + g.y);
     }
+    */
     return topConnectList;
   }
 
@@ -405,13 +415,13 @@ public class Grid {
   
   public void addLines(){
     int lines = 7 - aColour.numColors;
-    print(lines + " new line(s) generated with colors ");
+    //print(lines + " new line(s) generated with colors ");
     
+    /*
     for (String col : aColour.colList2){
       print(colorName(col)+" ");
     }
-    
-    
+    */    
     
     //println(lines + " lines added");
     for (int i=15+1; i>=0; i--) { // 15 columns
@@ -445,7 +455,9 @@ public class Grid {
       doubleLoop:
       for (int i=0; i<15+1; i++) { // 15 columns
         for (int j=0; j<17; j++) { // 17 rows
-          if (cellGrid[i][j].bubble.col == unhex(aCol)){
+          if (unhex(aCol) == cellGrid[i][j].bubble.col || 
+              unhex(aCol) == bottomCellGrid[0].bubble.col || 
+              unhex(aCol) == mainCell.bubble.col) { // can be refactored?
             colorPresent=true;
             break doubleLoop;
           }
