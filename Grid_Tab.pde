@@ -12,7 +12,11 @@ public class Grid {
   
   int bottomNum;
   
-  int populationNum = 1;
+  int populationNum = 9;
+  
+  boolean win = false;
+  
+  
   
   Grid() {}
 
@@ -49,8 +53,11 @@ public class Grid {
   
   public void shootMain() {
     mainCell.bubble.shoot();
+    doubleloop:
     for (int i=0; i<15+1; i++) { // 15 columns
       for (int j=0; j<17; j++) { // 17 rows
+        if (stopBubbleCollisionCheck)
+          break doubleloop;
         if (CGC(i,j) != INV && !stopBubbleCollisionCheck) { 
           bubbleCollide(new GridPos(i,j));
         }
@@ -92,7 +99,7 @@ public class Grid {
     GridPos newG = new GridPos();
     
     float actDist=dist(cellGrid[g.i][g.j].xPos,cellGrid[g.i][g.j].yPos,mainCell.bubble.xPos,mainCell.bubble.yPos);
-    float collDist=2*mainCell.bubble.APO;
+    float collDist=2*mainCell.bubble.APO-3;
     
     if (actDist<=collDist) {
       
@@ -140,9 +147,11 @@ public class Grid {
       }
       
       if (newG.i>=15) {
-        println("too high"); //<>//
+        println("too high");
       }
+      
       bubbleHasCollided(newG);
+      
       
     }
     
@@ -164,14 +173,36 @@ public class Grid {
     mainCell.bubble.col=bottomCellGrid[0].bubble.col;
     bottomCellGrid[0].bubble.col=aColour.randomColour(); 
     
+    checkWinLose();
+    //println("");
+    
+  }
+  
+  public void checkWinLose(){
     for (int j = 0; j<17; j++){
       if (CGC(15,j)!=INV) {
-        showGameOver=true;
+        showGameOver=true; //<>//
         gameOver();
         break;
       }
     }
-    //println("");
+    if (!showGameOver){
+      win=true;
+      outerloop:
+      for (int i=0; i<15+1; i++) { // 15 columns
+        for (int j=0; j<17; j++) { // 17 rows
+          if (CGC(i,j)!=INV){
+            win = false;
+            break outerloop;
+          }
+        }
+      }
+      if (win){
+        showWin=true;
+        gameOver();
+      } 
+    }
+    
     
   }
   
@@ -427,5 +458,6 @@ public class Grid {
     mouse=true;
     
   }
+  
   
 }
