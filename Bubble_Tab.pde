@@ -9,6 +9,7 @@ public class Bubble {
   boolean updated = false;
   boolean shot = false;
   boolean inCell = true;
+  boolean hide = false;
   float xPos;
   float yPos;
   float dx;
@@ -48,7 +49,8 @@ public class Bubble {
     else
       noStroke();
     fill(this.col);
-    circle(this.xPos,this.yPos,2*APO);
+    if (!hide)
+      circle(this.xPos,this.yPos,2*APO);
   }
   
   public void shoot() {

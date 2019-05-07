@@ -11,14 +11,15 @@
 
 public int gRAD=19; // grid radius
 public float gAPO = sqrt(3)*gRAD/2;
-int WIDTH = round(gAPO*35)+1;
-int HEIGHT = round(gRAD+1.5*gRAD*18);
+public int WIDTH = round(gAPO*35)+1;
+public int HEIGHT = round(gRAD+1.5*gRAD*18);
 
 Grid grid = new Grid();
 Arrow arrow = new Arrow();
 HexGrid hGrid = new HexGrid();
 
-boolean mouse;
+boolean mouse=false;
+boolean showGameOver=false;
 
 
 public void mousePressed(){
@@ -46,9 +47,15 @@ void draw() {
   
   grid.drawGrid();
   arrow.drawArrow();
-  if (mouse) {
+  if (mouse && !showGameOver) {
     grid.shootMain();
   }
+  if (showGameOver){
+    fill(0);
+    textSize(50);
+    text("You lose", WIDTH/2, HEIGHT/2);
+  }
+  
   hGrid.drawNumGrid();
   
 }

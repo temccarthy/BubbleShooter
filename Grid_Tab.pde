@@ -139,7 +139,10 @@ public class Grid {
         newG = setBubbleColorAsMainColor(g.i,g.j-1);
       }
       
-      bubbleHasCollided(newG); 
+      if (newG.i>=15) {
+        println("too high"); //<>//
+      }
+      bubbleHasCollided(newG);
       
     }
     
@@ -161,6 +164,13 @@ public class Grid {
     mainCell.bubble.col=bottomCellGrid[0].bubble.col;
     bottomCellGrid[0].bubble.col=aColour.randomColour(); 
     
+    for (int j = 0; j<17; j++){
+      if (CGC(15,j)!=INV) {
+        showGameOver=true;
+        gameOver();
+        break;
+      }
+    }
     //println("");
     
   }
@@ -184,42 +194,43 @@ public class Grid {
   }
   
   public void checkPopping(int i, int j, LinkedList<GridPos> checkPoppingList) {
- 
-    if (CGC(i,j)==CGC(i,j+1) && !checkPoppingList.contains(new GridPos(i,j+1))) {
-      checkPoppingList.add(new GridPos(i,j+1));
-      checkPopping(i,j+1,checkPoppingList);
-    }
-    if (CGC(i,j)==CGC(i,j-1) && !checkPoppingList.contains(new GridPos(i,j-1))) {
-      checkPoppingList.add(new GridPos(i,j-1));
-      checkPopping(i,j-1,checkPoppingList);
-    }
-    if (CGC(i,j)==CGC(i+1,j) && !checkPoppingList.contains(new GridPos(i+1,j))) {
-      checkPoppingList.add(new GridPos(i+1,j));
-      checkPopping(i+1,j,checkPoppingList);
-    }
-    if (CGC(i,j)==CGC(i-1,j) && !checkPoppingList.contains(new GridPos(i-1,j))) {
-      checkPoppingList.add(new GridPos(i-1,j));
-      checkPopping(i-1,j,checkPoppingList);
-    }
-    
-    if (i%2==0) {
-      if (CGC(i,j)==CGC(i+1,j-1) && !checkPoppingList.contains(new GridPos(i+1,j-1))) {
-        checkPoppingList.add(new GridPos(i+1,j-1));
-        checkPopping(i+1,j-1,checkPoppingList);
+    if (i<=15  && i>=0 && j<=17 && j>=0) {
+      if (CGC(i,j)==CGC(i,j+1) && !checkPoppingList.contains(new GridPos(i,j+1))) {
+        checkPoppingList.add(new GridPos(i,j+1));
+        checkPopping(i,j+1,checkPoppingList);
       }
-      if (CGC(i,j)==CGC(i-1,j-1) && !checkPoppingList.contains(new GridPos(i-1,j-1))) {
-        checkPoppingList.add(new GridPos(i-1,j-1));
-        checkPopping(i-1,j-1,checkPoppingList);
+      if (CGC(i,j)==CGC(i,j-1) && !checkPoppingList.contains(new GridPos(i,j-1))) {
+        checkPoppingList.add(new GridPos(i,j-1));
+        checkPopping(i,j-1,checkPoppingList);
       }
-    }
-    else {
-      if (CGC(i,j)==CGC(i+1,j+1) && !checkPoppingList.contains(new GridPos(i+1,j+1))) {
-        checkPoppingList.add(new GridPos(i+1,j+1));
-        checkPopping(i+1,j+1,checkPoppingList);
+      if (CGC(i,j)==CGC(i+1,j) && !checkPoppingList.contains(new GridPos(i+1,j))) {
+        checkPoppingList.add(new GridPos(i+1,j));
+        checkPopping(i+1,j,checkPoppingList);
       }
-      if (CGC(i,j)==CGC(i-1,j+1) && !checkPoppingList.contains(new GridPos(i-1,j+1))) {
-        checkPoppingList.add(new GridPos(i-1,j+1));
-        checkPopping(i-1,j+1,checkPoppingList);
+      if (CGC(i,j)==CGC(i-1,j) && !checkPoppingList.contains(new GridPos(i-1,j))) {
+        checkPoppingList.add(new GridPos(i-1,j));
+        checkPopping(i-1,j,checkPoppingList);
+      }
+      
+      if (i%2==0) {
+        if (CGC(i,j)==CGC(i+1,j-1) && !checkPoppingList.contains(new GridPos(i+1,j-1))) {
+          checkPoppingList.add(new GridPos(i+1,j-1));
+          checkPopping(i+1,j-1,checkPoppingList);
+        }
+        if (CGC(i,j)==CGC(i-1,j-1) && !checkPoppingList.contains(new GridPos(i-1,j-1))) {
+          checkPoppingList.add(new GridPos(i-1,j-1));
+          checkPopping(i-1,j-1,checkPoppingList);
+        }
+      }
+      else {
+        if (CGC(i,j)==CGC(i+1,j+1) && !checkPoppingList.contains(new GridPos(i+1,j+1))) {
+          checkPoppingList.add(new GridPos(i+1,j+1));
+          checkPopping(i+1,j+1,checkPoppingList);
+        }
+        if (CGC(i,j)==CGC(i-1,j+1) && !checkPoppingList.contains(new GridPos(i-1,j+1))) {
+          checkPoppingList.add(new GridPos(i-1,j+1));
+          checkPopping(i-1,j+1,checkPoppingList);
+        }
       }
     }
   }
@@ -374,9 +385,10 @@ public class Grid {
   public GridPos setBubbleColorAsMainColor(int i, int j) {
     try {
       cellGrid[i][j].bubble.col=mainCell.bubble.col;
+      
     } catch (ArrayIndexOutOfBoundsException e) {} // this shouldn't ever happen
 
-    return new GridPos(i,j);
+    return new GridPos(i,j); 
   }
   
   public color CGC(int i, int j) { // returns Cell Grid Color CGC
@@ -384,6 +396,7 @@ public class Grid {
       return this.cellGrid[i][j].bubble.col;
     }
     catch (ArrayIndexOutOfBoundsException e) {
+      
       return color (1,1,1,1); // color that nothing matches with
     }
   }
@@ -405,6 +418,14 @@ public class Grid {
       return "invisible";
     else
       return ""; //should never happen
+  }
+  
+  public void gameOver(){
+    arrow.show=false;
+    mainCell.bubble.hide=true;
+    bottomCellGrid[0].bubble.hide=true;
+    mouse=true;
+    
   }
   
 }
