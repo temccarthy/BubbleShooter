@@ -20,7 +20,7 @@ public class Colour {
   String hINV = hex(color (1,1,1,0));
   
   Colour(){
-    colList2.add(hRED);colList2.add(hYEL);colList2.add(hGRE);colList2.add(hCYA);//colList2.add(hBLU);colList2.add(hPUR);
+    colList2.add(hRED);colList2.add(hYEL);colList2.add(hGRE);//colList2.add(hCYA);//colList2.add(hBLU);colList2.add(hPUR);
     numColors=colList2.size();
   }
   

@@ -1,15 +1,17 @@
 public class GridPos {
-  int x;
-  int y;
+  int i;
+  int j;
   
-  GridPos(int x, int y){
-    this.x = x;
-    this.y = y;
+  GridPos(){}
+  
+  GridPos(int i, int j){
+    this.i = i;
+    this.j = j;
   }
   
   public boolean equals(Object o){
     GridPos aPos = (GridPos) o;
-    return (aPos.x == this.x && aPos.y == this.y);
+    return (aPos.i == this.i && aPos.j == this.j);
   }
   
   

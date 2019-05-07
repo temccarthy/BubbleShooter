@@ -12,7 +12,7 @@ public class Grid {
   
   int bottomNum;
   
-  int populationNum = 9;
+  int populationNum = 1;
   
   Grid() {
   }
@@ -61,20 +61,11 @@ public class Grid {
       bottomCollide();
     }
   }
-  
-  public void resetChecking() {
-    for (Cell[] cellRow : this.cellGrid) {
-      for (Cell aCell : cellRow) { 
-        aCell.bubble.popCheck = false;
-        aCell.bubble.delete = false;
-      }
-    }
-    mainCell.bubble.popCheck = false;
-  }
-  
+
+
   public void bottomCollide(){
     
-    int newJ=0;
+    GridPos g = new GridPos(0,0);
     
     float closestDist=dist(cellGrid[0][0].xPos,cellGrid[0][0].yPos,mainCell.bubble.xPos,mainCell.bubble.yPos);//dist to 0,0 bubble
 
@@ -85,25 +76,24 @@ public class Grid {
       //println("actual Dist: "+ aCellDist);
       if (aCellDist<closestDist){
         closestDist=aCellDist;
-        newJ=j;
+        g.j=j;
       }
     }
     
     //println("old color: " + hex(cellGrid[0][newJ].bubble.col) + ", " + "new color: " + hex(mainCell.bubble.col));
     
-    cellGrid[0][newJ].bubble.col=mainCell.bubble.col;
+    cellGrid[0][g.j].bubble.col=mainCell.bubble.col;
     //println("bottom: bubble placed at 0," + newJ + " with col " + hex(cellGrid[0][newJ].bubble.col));
-    bubbleHasCollided(0, newJ);
+    bubbleHasCollided(g);
     
   }
   
   
   public void bubbleCollide(GridPos g) {
     
-    int newI;
-    int newJ;
+    GridPos newG= new GridPos();
     
-    float actDist=dist(cellGrid[g.x][g.y].xPos,cellGrid[g.x][g.y].yPos,mainCell.bubble.xPos,mainCell.bubble.yPos);
+    float actDist=dist(cellGrid[g.i][g.j].xPos,cellGrid[g.i][g.j].yPos,mainCell.bubble.xPos,mainCell.bubble.yPos);
     float collDist=2*mainCell.bubble.APO;
     
     //stroke(0);
@@ -111,86 +101,87 @@ public class Grid {
     
     if (actDist<=collDist) {
       
-      float ang=-atan2(mainCell.bubble.yPos-cellGrid[g.x][g.y].yPos,mainCell.bubble.xPos-cellGrid[g.x][g.y].xPos);
+      float ang=-atan2(mainCell.bubble.yPos-cellGrid[g.i][g.j].yPos,mainCell.bubble.xPos-cellGrid[g.i][g.j].xPos);
       //println(ang);
       
       stopBubbleCollisionCheck=true; // stop checking for bubble collision
       
       if (ang <= PI/6 && ang > -PI/6) {
-        cellGrid[g.x][g.y+1].bubble.col=mainCell.bubble.col;
-        newI = g.x;
-        newJ = g.y+1;
+        cellGrid[g.i][g.j+1].bubble.col=mainCell.bubble.col;
+        newG.i = g.i;
+        newG.j = g.j+1;
       }
       else if (ang <= 3*PI/6 && ang > PI/6) {
-        if (g.x%2==0) {
-          cellGrid[g.x-1][g.y].bubble.col=mainCell.bubble.col;
-          newI = g.x-1;
-          newJ = g.y;
+        if (g.i%2==0) {
+          cellGrid[g.i-1][g.j].bubble.col=mainCell.bubble.col;
+          newG.i = g.i-1;
+          newG.j = g.j;
         }
         else {
-          cellGrid[g.x-1][g.y+1].bubble.col=mainCell.bubble.col;//has failed here, on right side
-          newI = g.x-1;
-          newJ = g.y+1;
+          cellGrid[g.i-1][g.j+1].bubble.col=mainCell.bubble.col;//has failed here, on right side
+          newG.i = g.i-1;
+          newG.j = g.j+1;
         }
       }
       else if (ang <= 5*PI/6 && ang > 3*PI/6) {
-        if (g.x%2==0) {
-          cellGrid[g.x-1][g.y-1].bubble.col=mainCell.bubble.col;//has failed
-          newI = g.x-1;
-          newJ = g.y-1;
+        if (g.i%2==0) {
+          cellGrid[g.i-1][g.j-1].bubble.col=mainCell.bubble.col;//has failed
+          newG.i = g.i-1;
+          newG.j = g.j-1;
         }
         else {
-          cellGrid[g.x-1][g.y].bubble.col=mainCell.bubble.col;
-          newI = g.x-1;
-          newJ = g.y;
+          cellGrid[g.i-1][g.j].bubble.col=mainCell.bubble.col;
+          newG.i = g.i-1;
+          newG.j = g.j;
         }
       }
       else if (ang <= -PI/6 && ang > -3*PI/6) {
-        if (g.x%2==0) {
-          cellGrid[g.x+1][g.y].bubble.col=mainCell.bubble.col;
-          newI = g.x+1;
-          newJ = g.y;
+        if (g.i%2==0) {
+          cellGrid[g.i+1][g.j].bubble.col=mainCell.bubble.col;
+          newG.i = g.i+1;
+          newG.j = g.j;
         }
         else {
-          cellGrid[g.x+1][g.y+1].bubble.col=mainCell.bubble.col;
-          newI = g.x+1;
-          newJ = g.y+1;
+          cellGrid[g.i+1][g.j+1].bubble.col=mainCell.bubble.col;
+          newG.i = g.i+1;
+          newG.j = g.j+1;
         }
       }
       else if (ang <= -3*PI/6 && ang > -5*PI/6) {
-        if (g.x%2==0) {
-          cellGrid[g.x+1][g.y-1].bubble.col=mainCell.bubble.col;
-          newI = g.x+1;
-          newJ = g.y-1;
+        if (g.i%2==0) {
+          cellGrid[g.i+1][g.j-1].bubble.col=mainCell.bubble.col;
+          newG.i = g.i+1;
+          newG.j = g.j-1;
         }
         else {
-          cellGrid[g.x+1][g.y].bubble.col=mainCell.bubble.col;
-          newI = g.x+1;
-          newJ = g.y;
+          cellGrid[g.i+1][g.j].bubble.col=mainCell.bubble.col;
+          newG.i = g.i+1;
+          newG.j = g.j;
         }
       }
       else { // either ang >5PI/6 or ang <-5PI/6
-        cellGrid[g.x][g.y-1].bubble.col=mainCell.bubble.col; //fails
-        newI = g.x;
-        newJ = g.y-1;
+        cellGrid[g.i][g.j-1].bubble.col=mainCell.bubble.col; //fails
+        newG.i = g.i;
+        newG.j = g.j-1;
       }
       
-      bubbleHasCollided(newI, newJ); // do things now that the bubble has collided
+      bubbleHasCollided(newG); 
       
     }
     
   }
   
-  public void bubbleHasCollided(int newI, int newJ){
+  public void bubbleHasCollided(GridPos newG){
     
     //println("new " + colorName(hex(cellGrid[newI][newJ].bubble.col))+ " bubble at "+newI+","+newJ);
     //delay(2000);
     
     mouse=false; // allows mouse to be clicked again 
     
-    checkColorConnections(newI,newJ);
+    checkColorConnections(newG);
     
     LinkedList<GridPos> topConnectList = checkTopConnectList();
+    
     deleteIfNotConnected(topConnectList);
     
     checkColorsPresent();
@@ -205,10 +196,10 @@ public class Grid {
     
   }
   
-  public void checkColorConnections(int newI, int newJ){
+  public void checkColorConnections(GridPos g){
     LinkedList<GridPos> checkPoppingList = new LinkedList<GridPos>();
     
-    checkPopping(newI, newJ, checkPoppingList);
+    checkPopping(g.i, g.j, checkPoppingList);
     
     if (checkPoppingList.size()<3) {
       bottomNum--;
@@ -216,15 +207,16 @@ public class Grid {
     }
     else {
       //println(newI+" "+newJ);
-      for (GridPos g : checkPoppingList){
-        cellGrid[g.x][g.y].bubble.col = INV;
+      for (GridPos popG : checkPoppingList){
+        println("Color connection: " + colorName(hex(cellGrid[popG.i][popG.j].bubble.col)) +" bubble deleted at " + popG.i + "," + popG.j);
+        cellGrid[popG.i][popG.j].bubble.col = INV;
       }
       
     }
   }
   
   public void checkPopping(int i, int j, LinkedList<GridPos> checkPoppingList) {
-    
+ 
     if (hex(CGC(i,j)).equals(hex(CGC(i,j+1))) && !checkPoppingList.contains(new GridPos(i,j+1))) {
       checkPoppingList.add(new GridPos(i,j+1));
       checkPopping(i,j+1,checkPoppingList);
@@ -272,57 +264,24 @@ public class Grid {
       return color (5,5,5,5); // color that nothing matches with
     }
   }
-  
-  public void pop(int i, int j){
-    this.cellGrid[i][j].bubble.popCheck=true;
-    this.cellGrid[i][j].bubble.delete=true;
-    
-    if (hex(CGC(i,j)).equals(hex(CGC(i,j+1))) && !this.cellGrid[i][j+1].bubble.popCheck) {
-      pop(i,j+1);
-    }
-    if (hex(CGC(i,j)).equals(hex(CGC(i,j-1))) && !this.cellGrid[i][j-1].bubble.popCheck) {
-      pop(i,j-1);
-    }
-    if (hex(CGC(i,j)).equals(hex(CGC(i+1,j))) && !this.cellGrid[i+1][j].bubble.popCheck) {
-      pop(i+1,j);
-    }
-    if (hex(CGC(i,j)).equals(hex(CGC(i-1,j))) && !this.cellGrid[i-1][j].bubble.popCheck) {
-      pop(i-1,j);
-    }
-    if (i%2==0) {
-      if (hex(CGC(i,j)).equals(hex(CGC(i+1,j-1))) && !this.cellGrid[i+1][j-1].bubble.popCheck) {        
-        pop(i+1,j-1);
-      }
-      if (hex(CGC(i,j)).equals(hex(CGC(i-1,j-1))) && !this.cellGrid[i-1][j-1].bubble.popCheck) {        
-        pop(i-1,j-1);
-      }
-    }
-    else {
-      if (hex(CGC(i,j)).equals(hex(CGC(i+1,j+1))) && !this.cellGrid[i+1][j+1].bubble.popCheck) {
-        pop(i+1,j+1);
-      }
-      if (hex(CGC(i,j)).equals(hex(CGC(i-1,j+1))) && !this.cellGrid[i-1][j+1].bubble.popCheck) {
-        pop(i-1,j+1);
-      }
-    }
-  }
-  
-   
    
   public LinkedList checkTopConnectList(){
     
     LinkedList<GridPos> topConnectList = new LinkedList<GridPos>();
-    // check all starting from bottom row, if connected add to list
-    for (int i=0; i<17; i++) {
-      if (this.cellGrid[0][i].bubble.col != INV && !topConnectList.contains(new GridPos(0,i))) {
-        checkTopConnect(0,i,topConnectList);
-        //println("ran");
+    
+    
+    for (int j=0; j<17; j++) {
+      if (this.cellGrid[0][j].bubble.col != INV){
+        if (!topConnectList.contains(new GridPos(0,j))) {
+          topConnectList.add(new GridPos(0,j));
+        }
+        checkTopConnect(0,j,topConnectList);
       }
     }
     
     /*
     for (GridPos g : topConnectList){
-      println("" + g.x + " " + g.y);
+      println("" + g.i + " " + g.j);
     }
     */
     return topConnectList;
@@ -370,23 +329,20 @@ public class Grid {
   }
   
   public void deleteIfNotConnected(LinkedList<GridPos> topConnectList){
+    LinkedList<GridPos> notConnectedList = new LinkedList<GridPos>();
     for (int i=0; i<15+1; i++) { // 15 columns
       for (int j=0; j<17; j++) { // 17 rows
         if (this.cellGrid[i][j].bubble.col != INV && !topConnectList.contains(new GridPos(i,j))) {
-          this.cellGrid[i][j].bubble.col=INV;
+          notConnectedList.add(new GridPos(i,j));
         }
       }
     }
     
-  }
- 
-  public void delete(){
-    for (Cell[] cellRow : this.cellGrid) {
-      for (Cell aCell : cellRow) { 
-        if (aCell.bubble.delete)
-          aCell.bubble.col = INV;
-      }
+    for (GridPos g : notConnectedList){
+      println("Top connection: " + colorName(hex(cellGrid[g.i][g.j].bubble.col)) +" bubble deleted at " + g.i + "," + g.j);
+      cellGrid[g.i][g.j].bubble.col=INV;
     }
+    
   }
   
   public void changeDrawOutline() {
@@ -400,9 +356,6 @@ public class Grid {
     for (int i = 0; i<bottomNum; i++) {
       this.bottomCellGrid[i].bubble.outline = true;
     }
-    // the 6 will be dependent on the number of colors in the game
-      //function for adding row(s), also dependent of the number of colors
-    
   }
   
   public void addLines(){
@@ -431,12 +384,6 @@ public class Grid {
         cellGrid[i][j].bubble.col = aColour.randomColour();
       }
     }
-    //generate bottom
-    
-    //try addlines
-    
-    // if out of bounds
-     // add til max is 18, then game over
   }
   
   public void checkColorsPresent(){

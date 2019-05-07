@@ -15,10 +15,6 @@ public class Bubble {
   float dy;
   int vel = 11;
   
-  boolean popCheck = false;
-  boolean delete = false;
-  
-  
   public Bubble(color col, boolean outline) {
     this.col = col;
     this.outline = outline;
