@@ -14,8 +14,7 @@ public class Grid {
   
   int populationNum = 1;
   
-  Grid() {
-  }
+  Grid() {}
 
   public void populate() {
     for (int i=0; i<15+1; i++) { // 15+1 rows (last row is for losing)
@@ -26,14 +25,15 @@ public class Grid {
           this.cellGrid[i][j] = new Cell(new Bubble((i<populationNum) ? aColour.randomColour() : INV,false), 2*gAPO+(2*gAPO*j), gRAD+1.5*gRAD*i);
       }
     }
-    this.bottomNum=aColour.colList2.size();
+    
+    this.bottomNum=aColour.colList2.size(); //initialize bottumNum
+    
     for (int i=0; i<6; i++) {
       this.bottomCellGrid[i] = new Cell(new Bubble(INV,(i<bottomNum)), 2*gAPO+37*i, gRAD+1.5*gRAD*16);
     }
     this.bottomCellGrid[0].bubble.col=aColour.randomColour();
     this.mainCell = new Cell(new Bubble(aColour.randomColour(), false), gAPO+2*gAPO*8, gRAD+1.5*gRAD*16);
   }
-  
   
   public void drawGrid() {
     for (Cell[] cellRow : this.cellGrid) {
@@ -51,7 +51,7 @@ public class Grid {
     mainCell.bubble.shoot();
     for (int i=0; i<15+1; i++) { // 15 columns
       for (int j=0; j<17; j++) { // 17 rows
-        if (cellGrid[i][j].bubble.col != INV && !stopBubbleCollisionCheck) { 
+        if (CGC(i,j) != INV && !stopBubbleCollisionCheck) { 
           bubbleCollide(new GridPos(i,j));
         }
       }
@@ -61,7 +61,6 @@ public class Grid {
       bottomCollide();
     }
   }
-
 
   public void bottomCollide(){
     
@@ -88,81 +87,56 @@ public class Grid {
     
   }
   
-  
   public void bubbleCollide(GridPos g) {
     
-    GridPos newG= new GridPos();
+    GridPos newG = new GridPos();
     
     float actDist=dist(cellGrid[g.i][g.j].xPos,cellGrid[g.i][g.j].yPos,mainCell.bubble.xPos,mainCell.bubble.yPos);
     float collDist=2*mainCell.bubble.APO;
     
-    //stroke(0);
-    //line(aCell.xPos,aCell.yPos,mainCell.bubble.xPos,mainCell.bubble.yPos);
-    
     if (actDist<=collDist) {
       
       float ang=-atan2(mainCell.bubble.yPos-cellGrid[g.i][g.j].yPos,mainCell.bubble.xPos-cellGrid[g.i][g.j].xPos);
-      //println(ang);
       
       stopBubbleCollisionCheck=true; // stop checking for bubble collision
       
       if (ang <= PI/6 && ang > -PI/6) {
-        cellGrid[g.i][g.j+1].bubble.col=mainCell.bubble.col;
-        newG.i = g.i;
-        newG.j = g.j+1;
+        newG = setBubbleColorAsMainColor(g.i,g.j+1);
       }
       else if (ang <= 3*PI/6 && ang > PI/6) {
         if (g.i%2==0) {
-          cellGrid[g.i-1][g.j].bubble.col=mainCell.bubble.col;
-          newG.i = g.i-1;
-          newG.j = g.j;
+          newG = setBubbleColorAsMainColor(g.i-1,g.j);
         }
         else {
-          cellGrid[g.i-1][g.j+1].bubble.col=mainCell.bubble.col;//has failed here, on right side
-          newG.i = g.i-1;
-          newG.j = g.j+1;
+          newG = setBubbleColorAsMainColor(g.i-1,g.j+1);
         }
       }
       else if (ang <= 5*PI/6 && ang > 3*PI/6) {
         if (g.i%2==0) {
-          cellGrid[g.i-1][g.j-1].bubble.col=mainCell.bubble.col;//has failed
-          newG.i = g.i-1;
-          newG.j = g.j-1;
+          newG = setBubbleColorAsMainColor(g.i-1,g.j-1);
         }
         else {
-          cellGrid[g.i-1][g.j].bubble.col=mainCell.bubble.col;
-          newG.i = g.i-1;
-          newG.j = g.j;
+          newG = setBubbleColorAsMainColor(g.i-1,g.j);
         }
       }
       else if (ang <= -PI/6 && ang > -3*PI/6) {
         if (g.i%2==0) {
-          cellGrid[g.i+1][g.j].bubble.col=mainCell.bubble.col;
-          newG.i = g.i+1;
-          newG.j = g.j;
+          newG = setBubbleColorAsMainColor(g.i+1,g.j);
         }
         else {
-          cellGrid[g.i+1][g.j+1].bubble.col=mainCell.bubble.col;
-          newG.i = g.i+1;
-          newG.j = g.j+1;
+          newG = setBubbleColorAsMainColor(g.i+1,g.j+1);
         }
       }
       else if (ang <= -3*PI/6 && ang > -5*PI/6) {
         if (g.i%2==0) {
-          cellGrid[g.i+1][g.j-1].bubble.col=mainCell.bubble.col;
-          newG.i = g.i+1;
-          newG.j = g.j-1;
+          newG = setBubbleColorAsMainColor(g.i+1,g.j-1);
         }
         else {
-          cellGrid[g.i+1][g.j].bubble.col=mainCell.bubble.col;
-          newG.i = g.i+1;
-          newG.j = g.j;
+          newG = setBubbleColorAsMainColor(g.i+1,g.j);
         }
       }
       else { // either ang >5PI/6 or ang <-5PI/6
-        cellGrid[g.i][g.j-1].bubble.col=mainCell.bubble.col; //fails
-        newG.i = g.i;
-        newG.j = g.j-1;
+        newG = setBubbleColorAsMainColor(g.i,g.j-1);
       }
       
       bubbleHasCollided(newG); 
@@ -172,9 +146,6 @@ public class Grid {
   }
   
   public void bubbleHasCollided(GridPos newG){
-    
-    //println("new " + colorName(hex(cellGrid[newI][newJ].bubble.col))+ " bubble at "+newI+","+newJ);
-    //delay(2000);
     
     mouse=false; // allows mouse to be clicked again 
     
@@ -190,9 +161,7 @@ public class Grid {
     mainCell.bubble.col=bottomCellGrid[0].bubble.col;
     bottomCellGrid[0].bubble.col=aColour.randomColour(); 
     
-    println("");
-    
-    //delay(2000);
+    //println("");
     
   }
   
@@ -206,7 +175,6 @@ public class Grid {
       changeDrawOutline();
     }
     else {
-      //println(newI+" "+newJ);
       for (GridPos popG : checkPoppingList){
         println("Color connection: " + colorName(hex(cellGrid[popG.i][popG.j].bubble.col)) +" bubble deleted at " + popG.i + "," + popG.j);
         cellGrid[popG.i][popG.j].bubble.col = INV;
@@ -217,58 +185,48 @@ public class Grid {
   
   public void checkPopping(int i, int j, LinkedList<GridPos> checkPoppingList) {
  
-    if (hex(CGC(i,j)).equals(hex(CGC(i,j+1))) && !checkPoppingList.contains(new GridPos(i,j+1))) {
+    if (CGC(i,j)==CGC(i,j+1) && !checkPoppingList.contains(new GridPos(i,j+1))) {
       checkPoppingList.add(new GridPos(i,j+1));
       checkPopping(i,j+1,checkPoppingList);
     }
-    if (hex(CGC(i,j)).equals(hex(CGC(i,j-1))) && !checkPoppingList.contains(new GridPos(i,j-1))) {
+    if (CGC(i,j)==CGC(i,j-1) && !checkPoppingList.contains(new GridPos(i,j-1))) {
       checkPoppingList.add(new GridPos(i,j-1));
       checkPopping(i,j-1,checkPoppingList);
     }
-    if (hex(CGC(i,j)).equals(hex(CGC(i+1,j))) && !checkPoppingList.contains(new GridPos(i+1,j))) {
+    if (CGC(i,j)==CGC(i+1,j) && !checkPoppingList.contains(new GridPos(i+1,j))) {
       checkPoppingList.add(new GridPos(i+1,j));
       checkPopping(i+1,j,checkPoppingList);
     }
-    if (hex(CGC(i,j)).equals(hex(CGC(i-1,j))) && !checkPoppingList.contains(new GridPos(i-1,j))) {
+    if (CGC(i,j)==CGC(i-1,j) && !checkPoppingList.contains(new GridPos(i-1,j))) {
       checkPoppingList.add(new GridPos(i-1,j));
       checkPopping(i-1,j,checkPoppingList);
     }
     
     if (i%2==0) {
-      if (hex(CGC(i,j)).equals(hex(CGC(i+1,j-1))) && !checkPoppingList.contains(new GridPos(i+1,j-1))) {
+      if (CGC(i,j)==CGC(i+1,j-1) && !checkPoppingList.contains(new GridPos(i+1,j-1))) {
         checkPoppingList.add(new GridPos(i+1,j-1));
         checkPopping(i+1,j-1,checkPoppingList);
       }
-      if (hex(CGC(i,j)).equals(hex(CGC(i-1,j-1))) && !checkPoppingList.contains(new GridPos(i-1,j-1))) {
+      if (CGC(i,j)==CGC(i-1,j-1) && !checkPoppingList.contains(new GridPos(i-1,j-1))) {
         checkPoppingList.add(new GridPos(i-1,j-1));
         checkPopping(i-1,j-1,checkPoppingList);
       }
     }
     else {
-      if (hex(CGC(i,j)).equals(hex(CGC(i+1,j+1))) && !checkPoppingList.contains(new GridPos(i+1,j+1))) {
+      if (CGC(i,j)==CGC(i+1,j+1) && !checkPoppingList.contains(new GridPos(i+1,j+1))) {
         checkPoppingList.add(new GridPos(i+1,j+1));
         checkPopping(i+1,j+1,checkPoppingList);
       }
-      if (hex(CGC(i,j)).equals(hex(CGC(i-1,j+1))) && !checkPoppingList.contains(new GridPos(i-1,j+1))) {
+      if (CGC(i,j)==CGC(i-1,j+1) && !checkPoppingList.contains(new GridPos(i-1,j+1))) {
         checkPoppingList.add(new GridPos(i-1,j+1));
         checkPopping(i-1,j+1,checkPoppingList);
       }
-    }
-  }
-  
-  public color CGC(int i, int j) { // returns Cell Grid Color CGC
-    try {
-      return this.cellGrid[i][j].bubble.col;
-    }
-    catch (ArrayIndexOutOfBoundsException e) {
-      return color (5,5,5,5); // color that nothing matches with
     }
   }
    
   public LinkedList checkTopConnectList(){
     
     LinkedList<GridPos> topConnectList = new LinkedList<GridPos>();
-    
     
     for (int j=0; j<17; j++) {
       if (this.cellGrid[0][j].bubble.col != INV){
@@ -287,41 +245,40 @@ public class Grid {
     return topConnectList;
   }
 
-  
   public void checkTopConnect(int i, int j, LinkedList<GridPos> topConnectList) {// return list of pairs to be deleted
     //println("added "+ i + " "+ j);
-    if ((CGC(i,j+1)!=INV) && j<16 && !topConnectList.contains(new GridPos(i,j+1))){
+    if (CGC(i,j+1)!=INV && j<16 && !topConnectList.contains(new GridPos(i,j+1))){
       topConnectList.add(new GridPos(i,j+1));
       checkTopConnect(i,j+1,topConnectList);
     }
-    if ((CGC(i,j-1)!=INV) && j>0 && !topConnectList.contains(new GridPos(i,j-1))){
+    if (CGC(i,j-1)!=INV && j>0 && !topConnectList.contains(new GridPos(i,j-1))){
       topConnectList.add(new GridPos(i,j-1));
       checkTopConnect(i,j-1,topConnectList);
     }
-    if ((CGC(i+1,j)!=INV) && i<15 && !topConnectList.contains(new GridPos(i+1,j))){
+    if (CGC(i+1,j)!=INV && i<15 && !topConnectList.contains(new GridPos(i+1,j))){
       topConnectList.add(new GridPos(i+1,j));
       checkTopConnect(i+1,j,topConnectList);
     }
-    if ((CGC(i-1,j)!=INV) && i>0 && !topConnectList.contains(new GridPos(i-1,j))){
+    if (CGC(i-1,j)!=INV && i>0 && !topConnectList.contains(new GridPos(i-1,j))){
       topConnectList.add(new GridPos(i-1,j));
       checkTopConnect(i-1,j,topConnectList);
     }
     if (i%2==0){
-      if ((CGC(i+1,j-1)!=INV) && i<15 && j>0 && !topConnectList.contains(new GridPos(i+1,j-1))){
+      if (CGC(i+1,j-1)!=INV && i<15 && j>0 && !topConnectList.contains(new GridPos(i+1,j-1))){
         topConnectList.add(new GridPos(i+1,j-1));
         checkTopConnect(i+1,j-1,topConnectList);
       }
-      if ((CGC(i-1,j-1)!=INV) && i>0 && j>0 && !topConnectList.contains(new GridPos(i-1,j-1))){
+      if (CGC(i-1,j-1)!=INV && i>0 && j>0 && !topConnectList.contains(new GridPos(i-1,j-1))){
         topConnectList.add(new GridPos(i-1,j-1));
         checkTopConnect(i-1,j-1,topConnectList);
       }
     }
     else {
-      if ((CGC(i+1,j+1)!=INV) && i<15 && j<16 && !topConnectList.contains(new GridPos(i+1,j+1))){
+      if (CGC(i+1,j+1)!=INV && i<15 && j<16 && !topConnectList.contains(new GridPos(i+1,j+1))){
         topConnectList.add(new GridPos(i+1,j+1));
         checkTopConnect(i+1,j+1,topConnectList);
       }
-      if ((CGC(i-1,j+1)!=INV) && i>0 && j<16 && !topConnectList.contains(new GridPos(i-1,j+1))){
+      if (CGC(i-1,j+1)!=INV && i>0 && j<16 && !topConnectList.contains(new GridPos(i-1,j+1))){
         topConnectList.add(new GridPos(i-1,j+1));
         checkTopConnect(i-1,j+1,topConnectList);
       }
@@ -332,7 +289,7 @@ public class Grid {
     LinkedList<GridPos> notConnectedList = new LinkedList<GridPos>();
     for (int i=0; i<15+1; i++) { // 15 columns
       for (int j=0; j<17; j++) { // 17 rows
-        if (this.cellGrid[i][j].bubble.col != INV && !topConnectList.contains(new GridPos(i,j))) {
+        if (this.CGC(i,j) != INV && !topConnectList.contains(new GridPos(i,j))) {
           notConnectedList.add(new GridPos(i,j));
         }
       }
@@ -372,7 +329,7 @@ public class Grid {
     for (int i=15+1; i>=0; i--) { // 15 columns
       for (int j=0; j<17; j++) { // 17 rows
         try {
-          cellGrid[i+lines][j].bubble.col = cellGrid[i][j].bubble.col;
+          cellGrid[i+lines][j].bubble.col = CGC(i,j);
           //println((i+lines) + "," + j +" set as " + i + "," + j + " to " + hex(cellGrid[i+lines][j].bubble.col));
         }
         catch (ArrayIndexOutOfBoundsException e) {}
@@ -391,10 +348,11 @@ public class Grid {
     
     for (String aCol : aColour.colList2) {
       boolean colorPresent = false;
+      
       doubleLoop:
       for (int i=0; i<15+1; i++) { // 15 columns
         for (int j=0; j<17; j++) { // 17 rows
-          if (unhex(aCol) == cellGrid[i][j].bubble.col || 
+          if (unhex(aCol) == CGC(i,j) || 
               unhex(aCol) == bottomCellGrid[0].bubble.col || 
               unhex(aCol) == mainCell.bubble.col) { // can be refactored?
             colorPresent=true;
@@ -413,6 +371,23 @@ public class Grid {
     
   }
   
+  public GridPos setBubbleColorAsMainColor(int i, int j) {
+    try {
+      cellGrid[i][j].bubble.col=mainCell.bubble.col;
+    } catch (ArrayIndexOutOfBoundsException e) {} // this shouldn't ever happen
+
+    return new GridPos(i,j);
+  }
+  
+  public color CGC(int i, int j) { // returns Cell Grid Color CGC
+    try {
+      return this.cellGrid[i][j].bubble.col;
+    }
+    catch (ArrayIndexOutOfBoundsException e) {
+      return color (1,1,1,1); // color that nothing matches with
+    }
+  }
+  
   public String colorName(String hex){
     if (hex.equals("FFFF0000"))
       return "red";
@@ -429,7 +404,7 @@ public class Grid {
     else if (hex.equals("00010101"))
       return "invisible";
     else
-      return "";
+      return ""; //should never happen
   }
   
 }
