@@ -58,6 +58,7 @@ void draw() {
   
   fill(0);
   textSize(50);
+  textAlign(CENTER);
   if (showGameOver){
     text("You lose!", WIDTH/2, HEIGHT/2);
   }
