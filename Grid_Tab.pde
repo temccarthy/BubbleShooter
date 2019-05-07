@@ -52,7 +52,7 @@ public class Grid {
     for (int i=0; i<15+1; i++) { // 15 columns
       for (int j=0; j<17; j++) { // 17 rows
         if (cellGrid[i][j].bubble.col != INV && !stopBubbleCollisionCheck) { 
-          bubbleCollide(cellGrid[i][j], i, j);
+          bubbleCollide(new GridPos(i,j));
         }
       }
     }
@@ -98,12 +98,12 @@ public class Grid {
   }
   
   
-  public void bubbleCollide(Cell aCell,int i, int j) {
+  public void bubbleCollide(GridPos g) {
     
     int newI;
     int newJ;
     
-    float actDist=dist(aCell.xPos,aCell.yPos,mainCell.bubble.xPos,mainCell.bubble.yPos);
+    float actDist=dist(cellGrid[g.x][g.y].xPos,cellGrid[g.x][g.y].yPos,mainCell.bubble.xPos,mainCell.bubble.yPos);
     float collDist=2*mainCell.bubble.APO;
     
     //stroke(0);
@@ -111,68 +111,68 @@ public class Grid {
     
     if (actDist<=collDist) {
       
-      float ang=-atan2(mainCell.bubble.yPos-aCell.yPos,mainCell.bubble.xPos-aCell.xPos);
+      float ang=-atan2(mainCell.bubble.yPos-cellGrid[g.x][g.y].yPos,mainCell.bubble.xPos-cellGrid[g.x][g.y].xPos);
       //println(ang);
       
       stopBubbleCollisionCheck=true; // stop checking for bubble collision
       
       if (ang <= PI/6 && ang > -PI/6) {
-        cellGrid[i][j+1].bubble.col=mainCell.bubble.col;
-        newI = i;
-        newJ = j+1;
+        cellGrid[g.x][g.y+1].bubble.col=mainCell.bubble.col;
+        newI = g.x;
+        newJ = g.y+1;
       }
       else if (ang <= 3*PI/6 && ang > PI/6) {
-        if (i%2==0) {
-          cellGrid[i-1][j].bubble.col=mainCell.bubble.col;
-          newI = i-1;
-          newJ = j;
+        if (g.x%2==0) {
+          cellGrid[g.x-1][g.y].bubble.col=mainCell.bubble.col;
+          newI = g.x-1;
+          newJ = g.y;
         }
         else {
-          cellGrid[i-1][j+1].bubble.col=mainCell.bubble.col;//has failed here, on right side
-          newI = i-1;
-          newJ = j+1;
+          cellGrid[g.x-1][g.y+1].bubble.col=mainCell.bubble.col;//has failed here, on right side
+          newI = g.x-1;
+          newJ = g.y+1;
         }
       }
       else if (ang <= 5*PI/6 && ang > 3*PI/6) {
-        if (i%2==0) {
-          cellGrid[i-1][j-1].bubble.col=mainCell.bubble.col;//has failed
-          newI = i-1;
-          newJ = j-1;
+        if (g.x%2==0) {
+          cellGrid[g.x-1][g.y-1].bubble.col=mainCell.bubble.col;//has failed
+          newI = g.x-1;
+          newJ = g.y-1;
         }
         else {
-          cellGrid[i-1][j].bubble.col=mainCell.bubble.col;
-          newI = i-1;
-          newJ = j;
+          cellGrid[g.x-1][g.y].bubble.col=mainCell.bubble.col;
+          newI = g.x-1;
+          newJ = g.y;
         }
       }
       else if (ang <= -PI/6 && ang > -3*PI/6) {
-        if (i%2==0) {
-          cellGrid[i+1][j].bubble.col=mainCell.bubble.col;
-          newI = i+1;
-          newJ = j;
+        if (g.x%2==0) {
+          cellGrid[g.x+1][g.y].bubble.col=mainCell.bubble.col;
+          newI = g.x+1;
+          newJ = g.y;
         }
         else {
-          cellGrid[i+1][j+1].bubble.col=mainCell.bubble.col;
-          newI = i+1;
-          newJ = j+1;
+          cellGrid[g.x+1][g.y+1].bubble.col=mainCell.bubble.col;
+          newI = g.x+1;
+          newJ = g.y+1;
         }
       }
       else if (ang <= -3*PI/6 && ang > -5*PI/6) {
-        if (i%2==0) {
-          cellGrid[i+1][j-1].bubble.col=mainCell.bubble.col;
-          newI = i+1;
-          newJ = j-1;
+        if (g.x%2==0) {
+          cellGrid[g.x+1][g.y-1].bubble.col=mainCell.bubble.col;
+          newI = g.x+1;
+          newJ = g.y-1;
         }
         else {
-          cellGrid[i+1][j].bubble.col=mainCell.bubble.col;
-          newI = i+1;
-          newJ = j;
+          cellGrid[g.x+1][g.y].bubble.col=mainCell.bubble.col;
+          newI = g.x+1;
+          newJ = g.y;
         }
       }
       else { // either ang >5PI/6 or ang <-5PI/6
-        cellGrid[i][j-1].bubble.col=mainCell.bubble.col; //fails
-        newI = i;
-        newJ = j-1;
+        cellGrid[g.x][g.y-1].bubble.col=mainCell.bubble.col; //fails
+        newI = g.x;
+        newJ = g.y-1;
       }
       
       bubbleHasCollided(newI, newJ); // do things now that the bubble has collided
@@ -188,26 +188,7 @@ public class Grid {
     
     mouse=false; // allows mouse to be clicked again 
     
-    
-    checkPopping(newI, newJ);
-    println("Things in checkPoppingList: ");
-    for (GridPos g : checkPoppingList){
-      println(g.x + "," + g.y);
-    }
-    
-    
-    if (checkPoppingList.size()<3) {
-      bottomNum--;
-      changeDrawOutline();
-    }
-    else {
-      //println(newI+" "+newJ);
-      for (GridPos g : checkPoppingList){
-        cellGrid[g.x][g.y].bubble.col = INV;
-      }
-      
-    }
-    checkPoppingList.clear();
+    checkColorConnections(newI,newJ);
     
     LinkedList<GridPos> topConnectList = checkTopConnectList();
     deleteIfNotConnected(topConnectList);
@@ -224,50 +205,61 @@ public class Grid {
     
   }
   
+  public void checkColorConnections(int newI, int newJ){
+    LinkedList<GridPos> checkPoppingList = new LinkedList<GridPos>();
+    
+    checkPopping(newI, newJ, checkPoppingList);
+    
+    if (checkPoppingList.size()<3) {
+      bottomNum--;
+      changeDrawOutline();
+    }
+    else {
+      //println(newI+" "+newJ);
+      for (GridPos g : checkPoppingList){
+        cellGrid[g.x][g.y].bubble.col = INV;
+      }
+      
+    }
+  }
   
-  LinkedList<GridPos> checkPoppingList = new LinkedList<GridPos>();
-  
-  public void checkPopping(int i, int j) {
-    //numTouching++;
-    //this.cellGrid[i][j].bubble.popCheck=true;
+  public void checkPopping(int i, int j, LinkedList<GridPos> checkPoppingList) {
     
     if (hex(CGC(i,j)).equals(hex(CGC(i,j+1))) && !checkPoppingList.contains(new GridPos(i,j+1))) {
       checkPoppingList.add(new GridPos(i,j+1));
-      checkPopping(i,j+1);
+      checkPopping(i,j+1,checkPoppingList);
     }
     if (hex(CGC(i,j)).equals(hex(CGC(i,j-1))) && !checkPoppingList.contains(new GridPos(i,j-1))) {
       checkPoppingList.add(new GridPos(i,j-1));
-      checkPopping(i,j-1);
+      checkPopping(i,j-1,checkPoppingList);
     }
     if (hex(CGC(i,j)).equals(hex(CGC(i+1,j))) && !checkPoppingList.contains(new GridPos(i+1,j))) {
       checkPoppingList.add(new GridPos(i+1,j));
-      checkPopping(i+1,j);
+      checkPopping(i+1,j,checkPoppingList);
     }
     if (hex(CGC(i,j)).equals(hex(CGC(i-1,j))) && !checkPoppingList.contains(new GridPos(i-1,j))) {
       checkPoppingList.add(new GridPos(i-1,j));
-      checkPopping(i-1,j);
+      checkPopping(i-1,j,checkPoppingList);
     }
     
     if (i%2==0) {
       if (hex(CGC(i,j)).equals(hex(CGC(i+1,j-1))) && !checkPoppingList.contains(new GridPos(i+1,j-1))) {
         checkPoppingList.add(new GridPos(i+1,j-1));
-        checkPopping(i+1,j-1);
+        checkPopping(i+1,j-1,checkPoppingList);
       }
       if (hex(CGC(i,j)).equals(hex(CGC(i-1,j-1))) && !checkPoppingList.contains(new GridPos(i-1,j-1))) {
         checkPoppingList.add(new GridPos(i-1,j-1));
-        checkPopping(i-1,j-1);
-
+        checkPopping(i-1,j-1,checkPoppingList);
       }
-      
     }
     else {
       if (hex(CGC(i,j)).equals(hex(CGC(i+1,j+1))) && !checkPoppingList.contains(new GridPos(i+1,j+1))) {
         checkPoppingList.add(new GridPos(i+1,j+1));
-        checkPopping(i+1,j+1);
+        checkPopping(i+1,j+1,checkPoppingList);
       }
       if (hex(CGC(i,j)).equals(hex(CGC(i-1,j+1))) && !checkPoppingList.contains(new GridPos(i-1,j+1))) {
         checkPoppingList.add(new GridPos(i-1,j+1));
-        checkPopping(i-1,j+1);
+        checkPopping(i-1,j+1,checkPoppingList);
       }
     }
   }
